@@ -60,3 +60,4 @@
   ansible.builtin.import_tasks: sample.yml
   when:
     - openobserve_sample_load | bool
+    - not is_container | bool
