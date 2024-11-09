@@ -46,6 +46,11 @@
         name: procps
         state: present
       when: ansible_os_family == "RedHat"
+    - name: Debian | Ensure ps/pgrep is present
+      ansible.builtin.package:
+        name: procps
+        state: present
+      when: ansible_os_family == "Debian"
     - name: Check all processes
       ansible.builtin.command: ps aux
       changed_when: false
