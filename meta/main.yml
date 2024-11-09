@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: openobserve
+  author: juju4
+  description: Setup openobserve, observability platform (Logs, Metrics, Traces) with low-storage cost, rust-based, SQL based query.
+  license: BSD
+  min_ansible_version: '1.9'
+  standalone: true
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - noble
+        - jammy
+        - focal
+  galaxy_tags:
+    - system
+    - logs
+    - aggregation
+dependencies: []

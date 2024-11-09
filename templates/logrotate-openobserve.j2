@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+## /etc/logrotate.d/openobserve
+
+/var/log/openobserve/*.log {
+    rotate {{ openobserve_logrotate_rotate|int }}
+    {{ openobserve_logrotate_period }}
+{% if openobserve_logrotate_datext %}
+    dateext
+    dateformat {{ openobserve_logrotate_datformat }}
+{% endif%}
+    missingok
+    notifempty
+{% if openobserve_logrotate_compress %}
+    compress
+    delaycompress
+{% endif %}
+    missingok
+    notifempty
+    copytruncate
+    create 0640 {{ oo_user }} root
+}

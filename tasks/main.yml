@@ -1,0 +1,54 @@
+---
+
+- name: Linux platform
+  ansible.builtin.set_fact:
+    oo_platform: linux
+  when: ansible_system == 'Linux'
+- name: Darwin platform
+  ansible.builtin.set_fact:
+    oo_platform: darwin
+  when: ansible_system == 'MacOS'
+- name: X86_64 arch
+  ansible.builtin.set_fact:
+    oo_arch: amd64
+  when: ansible_architecture == 'x86_64'
+- name: Debug
+  ansible.builtin.debug:
+    var: "{{ item }}"
+  loop:
+    - ansible_system
+    - ansible_architecture
+
+- name: Set fact is_container
+  ansible.builtin.set_fact:
+    is_container: true
+  when: >
+    (ansible_virtualization_type is defined and
+      (ansible_virtualization_type == "docker"
+       or ansible_virtualization_type == "containerd"
+       or ansible_virtualization_type == "container"
+      )
+    )
+
+- name: Import Github repo release download
+  ansible.builtin.import_tasks: github-repo-download.yml
+  vars:
+    gh_repo: "{{ oo_repo }}"
+    gh_release: "{{ oo_release }}"
+    # gh_json_query: "assets[*].browser_download_url"  # ok
+    # gh_json_query: "assets[?ends_with(browser_download_url, 'linux-amd64.tar.gz')]"  # ok
+    gh_json_query: "assets[?ends_with(browser_download_url, 'linux-amd64.tar.gz')].browser_download_url"
+
+- name: Import openobserve tasks
+  ansible.builtin.import_tasks: openobserve.yml
+
+- name: Import logrotate tasks
+  ansible.builtin.import_tasks: logrotate.yml
+
+- name: Import systemd tasks
+  ansible.builtin.import_tasks: systemd.yml
+
+- name: Import sample tasks
+  ansible.builtin.import_tasks: sample.yml
+  when:
+    - openobserve_sample_load | bool

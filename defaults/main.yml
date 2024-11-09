@@ -1,0 +1,31 @@
+---
+
+oo_repo: openobserve/openobserve
+oo_release: latest
+
+oo_user: _openobserve
+oo_home: /var/_openobserve
+oo_rootdir: /var/_openobserve/openobserve
+
+oo_env_variables_template: "default-env.j2"
+oo_root_user_email: root@example.com
+oo_root_user_pass: root@example.com
+
+openobserve_sample_load: true
+
+openobserve_cgroups_restriction_enable: true
+
+# if not empty, to be added to systemd service IPAddressAllow
+openobserve_webproxy_ip: ''
+# same but IP or hostname
+openobserve_webproxy_host: ''
+openobserve_webproxy_port: ''
+
+openobserve_logrotate_period: 'daily'
+openobserve_logrotate_rotate: 30
+openobserve_logrotate_compress: true
+openobserve_logrotate_delaycompress: true
+openobserve_logrotate_datext: true
+openobserve_logrotate_datformat: '-%Y%m%d'
+
+is_container: false

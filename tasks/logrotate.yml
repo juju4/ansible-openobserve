@@ -1,0 +1,16 @@
+---
+
+- name: Ensure logrotate package is present
+  ansible.builtin.package:
+    name: logrotate
+    state: present
+  register: pkg_result
+  until: pkg_result is success
+
+- name: Add logrotate configuration for openobserve logs
+  ansible.builtin.template:
+    src: logrotate-openobserve.j2
+    dest: /etc/logrotate.d/openobserve
+    mode: '0644'
+    validate: 'logrotate -dv %s'
+    backup: yes

@@ -1,0 +1,33 @@
+---
+
+- name: Ensure systemd is present
+  ansible.builtin.package:
+    name: systemd
+    state: present
+
+- name: Configure openobserve /etc/default
+  ansible.builtin.template:
+    src: "{{ oo_env_variables_template }}"
+    dest: "/etc/default/openobserve"
+    mode: '0640'
+    owner: root
+    group: "{{ oo_user }}"
+
+- name: Configure openobserve systemd unit
+  ansible.builtin.template:
+    src: "systemd-openobserve.service.j2"
+    dest: "/etc/systemd/system/openobserve.service"
+    mode: '0644'
+  notify:
+    - Reload systemd
+
+- name: Enable and start openobserve service
+  ansible.builtin.service:
+    name: "openobserve.service"
+    state: started
+    enabled: yes
+  no_log: "{{ openobserve_no_log | default(true) }}"
+  when: not is_container | bool
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

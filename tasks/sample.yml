@@ -1,0 +1,35 @@
+---
+
+- name: Download sample kubernetes data
+  ansible.builtin.get_url:
+    url: 'https://zinc-public-data.s3.us-west-2.amazonaws.com/zinc-enl/sample-k8s-logs/k8slog_json.json.zip'
+    dest: "{{ oo_home }}/k8slog_json.json.zip"
+    mode: '0400'
+    owner: "{{ oo_user }}"
+    checksum: sha256:6705fbf64df4ba42d1e78f9e7bb9673b454a71986efc84d855685d8874f1da5c
+
+- name: Ensure unzip is present
+  ansible.builtin.package:
+    name: unzip
+    state: present
+  register: pkg_result
+  until: pkg_result is success
+
+- name: Unarchive sample kubernetes data
+  ansible.builtin.unarchive:
+    src: "{{ oo_home }}/k8slog_json.json.zip"
+    dest: "{{ oo_home }}"
+    mode: '0600'
+    owner: "{{ oo_user }}"
+    remote_src: true
+
+- name: Load sample data
+  ansible.builtin.uri:
+    url: "http://localhost:5080/api/default/default/_json"
+    method: POST
+    src: "{{ oo_home }}/k8slog_json.json"
+    remote_src: true
+    user: "{{ oo_root_user_email }}"
+    password: "{{ oo_root_user_pass }}"
+  register: _result
+  until: _result.status == 200
