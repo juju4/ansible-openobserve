@@ -69,6 +69,8 @@
 - name: Check if openobserve port is listening
   ansible.builtin.wait_for:
     port: "{{ oo_listen_port }}"
+  when:
+    - not is_container | bool
 
 - name: Import sample tasks
   ansible.builtin.import_tasks: sample.yml
