@@ -19,7 +19,7 @@ jobs:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       ANSIBLE_EXTRA_VARS: ""
       ANSIBLE_ROLE: juju4.openobserve
-      SUITE: default
+      SUITE: default-full
 
     steps:
       - uses: actions/checkout@v4
