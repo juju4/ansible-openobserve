@@ -16,7 +16,7 @@
     filebeat_output_elasticsearch_auth:
       username: "{{ oo_root_user_email }}"
       password: "{{ oo_root_user_pass }}"
-    filebeat_template: "{{ lookup('env','GITHUB_WORKSPACE') }}/templates/filebeat-openobserve.yml.j2"
+    filebeat_template: "{{ lookup('env','GITHUB_WORKSPACE') }}/juju4.openobserve/templates/filebeat-openobserve.yml.j2"
     filebeat_inputs:
       - type: log
         paths:
