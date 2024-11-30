@@ -11,6 +11,7 @@
     ports:
       - { h: localhost, p: 5080 }
     is_container: false
+    org_id: default
   pre_tasks:
     - name: Debug | var ansible_virtualization_type
       ansible.builtin.debug:
@@ -70,7 +71,7 @@
         - not is_container|bool
 
     - name: Get errors
-      ansible.builtin.command: cat /var/log/openobserve/errors.log
+      ansible.builtin.command: cat /var/log/openobserve/error.log
       changed_when: false
       failed_when: false
       register: errors
@@ -84,12 +85,17 @@
 
     - name: Check few queries
       ansible.builtin.uri:
-        url: "http://localhost:5080/{{ item }}"
+        url: "http://localhost:5080{{ item }}"
+        url_username: "{{ oo_root_user_user }}"
+        url_password: "{{ oo_root_user_pass }}"
+        return_content: yes
       changed_when: false
       loop:
-        - "/api/{org_id}/dashboards"
-        - "/api/{org_id}/alerts"
-        - "/api/{org_id}/users"
+        - "/web/"
+        - "/api/{{ org_id }}/dashboards"
+        - "/api/{{ org_id }}/alerts"
+        - "/api/{{ org_id }}/users"
+        - "/api/{{ org_id }}/streams"
       when:
         - not is_container|bool
 
@@ -97,8 +103,8 @@
     - name: Check last logs
       ansible.builtin.uri:
         url: "http://localhost:5080/api/default/default/_json"
-        user: "{{ oo_root_user_user }}"
-        password: "{{ oo_root_user_pass }}"
+        url_username: "{{ oo_root_user_user }}"
+        url_password: "{{ oo_root_user_pass }}"
         method: POST
         body: |
           {
