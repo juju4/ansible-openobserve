@@ -40,3 +40,7 @@ repos:
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
+        # https://github.com/pre-commit/pre-commit-hooks/issues/157
+        language: system
+        entry: ansible-lint .
+        additional_dependencies: []
