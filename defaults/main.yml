@@ -7,6 +7,13 @@ oo_user: _openobserve
 oo_home: /var/_openobserve
 oo_rootdir: /var/_openobserve/openobserve
 
+# Note: localhost and ::1 don't seem accepted
+oo_listen_host: 127.0.0.1
+oo_listen_port: 5080
+oo_listen_port_grpc: 5081
+oo_compact_retention: 365
+oo_telemetry: true
+
 oo_env_variables_template: "default-env.j2"
 oo_root_user_email: root@example.com
 oo_root_user_pass: root@example.com
