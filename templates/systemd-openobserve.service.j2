@@ -9,8 +9,15 @@ Requires=network.target
 
 [Service]
 Type=simple
+{% if openobserve_build_enable | bool %}
+ExecStart=/bin/bash -c "{{ oo_home }}/.cargo/bin/openobserve"
+{% else %}
 ExecStart=/bin/bash -c "{{ oo_rootdir }}/openobserve"
+{% endif %}
 EnvironmentFile=/etc/default/openobserve
+{% if openobserve_webproxy_enable | bool %}
+EnvironmentFile=/etc/environment
+{% endif %}
 WorkingDirectory={{ oo_rootdir }}
 User={{ oo_user }}
 Group={{ oo_user }}
@@ -61,10 +68,11 @@ RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
 
 IPAccounting=yes
 {% if openobserve_webproxy_ip|string %}
-IPAddressAllow={{ openobserve_webproxy_ip }}
-{% else %}
-# IPAddressAllow=localhost link-local multicast 10.0.0.0/8 192.168.0.0/16
+# upstream communication can be limited to proxy
+# but must be able to receive logs too...
+# IPAddressAllow={{ openobserve_webproxy_ip }}
 {% endif %}
+IPAddressAllow=localhost link-local multicast 10.0.0.0/8 192.168.0.0/16
 
 CapabilityBoundingSet=~CAP_AUDIT_CONTROL CAP_AUDIT_READ CAP_DAC_READ_SEARCH
 CapabilityBoundingSet=~CAP_SYS_RAWIO

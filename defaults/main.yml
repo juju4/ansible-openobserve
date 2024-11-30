@@ -22,7 +22,10 @@ openobserve_sample_load: true
 
 openobserve_cgroups_restriction_enable: true
 
-# if not empty, to be added to systemd service IPAddressAllow
+# This will load /etc/environment in systemd to get
+# proxy settings
+openobserve_webproxy_enable: false
+# currently not used as can't restrict incoming traffic
 openobserve_webproxy_ip: ''
 # same but IP or hostname
 openobserve_webproxy_host: ''
