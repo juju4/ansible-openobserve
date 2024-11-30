@@ -3,7 +3,7 @@
 
 # openobserve ansible role
 
-A simple ansible role to setup [https://openobserve.ai openobserve], observability platform (Logs, Metrics, Traces) with low-storage cost, rust-based, SQL based query.
+A simple ansible role to setup [Openobserve](https://openobserve.ai) (https://github.com/openobserve/openobserve), observability platform (Logs, Metrics, Traces) with low-storage cost, rust-based, SQL based query.
 
 ## Requirements & Dependencies
 
@@ -46,7 +46,14 @@ $ MOLECULE_DISTRO=ubuntu:24.04 molecule test --destroy=never
 
 ## Troubleshooting & Known issues
 
-N/A
+* Service fails to start "openobserve.service: Main process exited, code=killed, status=4/ILL". Manual start results in "Illegal instruction". Check `cat /proc/cpuinfo`. Tool default x86 release requires: +sse2,+ssse3,+sse4.1,+sse4.2,+aes, mostly because gxhash. Fallback is source build.
+https://github.com/ogxd/gxhash/blob/main/README.md
+https://github.com/tteck/Proxmox/discussions/1480
+https://github.com/openobserve/openobserve/issues/966
+https://discuss.openobserve.ai/2K9df2
+https://github.com/openobserve/openobserve/issues/4859
+https://github.com/openobserve/openobserve/issues/3495
+https://github.com/openobserve/openobserve/issues/3910
 
 ## License
 
