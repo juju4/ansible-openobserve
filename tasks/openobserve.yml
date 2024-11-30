@@ -41,6 +41,8 @@
     dest: "{{ oo_rootdir }}"
     mode: '0755'
     remote_src: true
+  when:
+    - not openobserve_build_enable | bool
 
 - name: Ensure logs folder exists
   ansible.builtin.file:

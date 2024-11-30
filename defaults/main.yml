@@ -29,3 +29,11 @@ openobserve_logrotate_datext: true
 openobserve_logrotate_datformat: '-%Y%m%d'
 
 is_container: false
+
+# custom build
+openobserve_build_enable: false
+openobserve_build_version: fde562d3920ce657355d7dbff44c607cd991c8aa
+openobserve_build_pkgs:
+  - git
+  - protobuf-compiler
+  # - cargo  # using rustup to get recent one

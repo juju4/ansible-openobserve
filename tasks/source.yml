@@ -1,0 +1,110 @@
+---
+
+- name: Ensure build dependencies are present
+  ansible.builtin.package:
+    name: "{{ openobserve_build_pkgs }}"
+    state: present
+  register: pkg_result
+  until: pkg_result is success
+
+# ubuntu-24.04: error: package `datafusion-common-runtime v43.0.0` cannot be built because it requires rustc 1.79 or newer, while the currently active rustc version is 1.75.0"
+- name: Download Rustup
+  ansible.builtin.get_url:
+    url: https://sh.rustup.rs
+    dest: "{{ oo_home }}/rustup.sh"
+    mode: '0600'
+    owner: "{{ oo_user }}"
+
+- name: Install rustup
+  ansible.builtin.command: sh rustup.sh -y
+  args:
+    chdir: "{{ oo_home }}"
+    creates: "{{ oo_home }}/.cargo/env"
+  become: yes
+  become_user: "{{ oo_user }}"
+
+- name: Ensure build directory exists
+  ansible.builtin.file:
+    path: "{{ oo_home }}/build"
+    state: directory
+    mode: '0700'
+    owner: "{{ oo_user }}"
+
+- name: Git clone repository
+  ansible.builtin.git:
+    repo: https://github.com/openobserve/openobserve.git
+    dest: "{{ oo_home }}/build"
+    version: "{{ openobserve_build_version }}"
+    update: no
+  become: yes
+  become_user: "{{ oo_user }}"
+
+# error: Gxhash requires aes and sse2 intrinsics.
+- name: Disable gxhash if older cpu
+  ansible.builtin.replace:
+    path: "{{ item.p }}"
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
+    mode: '0600'
+  loop:
+    - { p: "{{ oo_home }}/build/src/config/Cargo.toml",
+        re: "^default = \\[\"gxhash\"\\]",
+        rep: "default = []"
+    }
+    - { p: "{{ oo_home }}/build/.cargo/config.toml",
+        re: "\\+aes,",
+        rep: ""
+    }
+  when:
+    - "'+aes' not in cpuinfo.stdout"
+
+- name: Build openobserve
+  ansible.builtin.command:
+    cmd: cargo build --release
+  args:
+    chdir: "{{ oo_home }}/build"
+    creates: "{{ oo_home }}/build/target/release/openobserve"
+  environment:
+    PATH: "{{ oo_home }}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    RUSTFLAGS: "-C target-cpu=native"
+  become: yes
+  become_user: "{{ oo_user }}"
+  # async: "{{ openobserve_build_max | default(3600) }}"
+  # poll: 0
+  register: cargobuild
+
+- name: Check on async task for building
+  ansible.builtin.async_status:  # noqa no-handler
+    jid: "{{ cargobuild.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished or cargobuild.finished
+  retries: 60
+  delay: 60
+  when:
+    - cargobuild is changed
+    - false
+
+- name: Install openobserve
+  ansible.builtin.command:
+    cmd: "cargo install --path {{ oo_home }}/build"
+  args:
+    chdir: "{{ oo_home }}/build"
+    creates: "{{ oo_home }}/.cargo/bin/openobserve"
+  environment:
+    PATH: "{{ oo_home }}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  become: yes
+  become_user: "{{ oo_user }}"
+  # async: "{{ openobserve_buildinstall_max | default(3600) }}"
+  # poll: 0
+  register: cargoinstall
+
+- name: Check on async task for cargo install
+  ansible.builtin.async_status:  # noqa no-handler
+    jid: "{{ cargoinstall.ansible_job_id }}"
+  register: job_result2
+  until: job_result2.finished or cargoinstall.finished
+  retries: 60
+  delay: 60
+  when:
+    - cargoinstall is changed
+    - false
