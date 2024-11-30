@@ -1,0 +1,14 @@
+---
+
+- name: Get cpuinfo
+  ansible.builtin.command:
+    cmd: cat /proc/cpuinfo
+  changed_when: false
+  register: cpuinfo
+
+- name: Ensure cpu has aes and sse2 are available - gxhash
+  ansible.builtin.assert:
+    that:
+      - "'+aes' in cpuinfo.stdout"
+      - "'+sse2' in cpuinfo.stdout"
+  when: false

@@ -30,6 +30,9 @@
       )
     )
 
+- name: Import compatibility-check
+  ansible.builtin.import_tasks: compatibility-check.yml
+
 - name: Debian | Update apt cache
   ansible.builtin.apt:
     update_cache: yes
@@ -62,6 +65,10 @@
 
 - name: Import systemd tasks
   ansible.builtin.import_tasks: systemd.yml
+
+- name: Check if openobserve port is listening
+  ansible.builtin.wait_for:
+    port: "{{ oo_listen_port }}"
 
 - name: Import sample tasks
   ansible.builtin.import_tasks: sample.yml
