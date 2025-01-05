@@ -55,6 +55,10 @@ https://github.com/openobserve/openobserve/issues/4859
 https://github.com/openobserve/openobserve/issues/3495
 https://github.com/openobserve/openobserve/issues/3910
 
+* When building openobserve, you will usually need more RAM. 2-3GB may be enough to run a collector, 4-8GB to do the build.
+
+* It does not seem possible to switch an instance with extra cpu instructions to one without (for example, VM/container cluster with different CPU). May cause error like "Error: Migration file of version 'm20241204_143100_create_table_search_queue' is missing, this migration has been applied but its file is missing"
+
 ## License
 
 BSD 2-clause
