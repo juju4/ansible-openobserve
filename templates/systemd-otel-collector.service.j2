@@ -1,38 +1,29 @@
 {{ ansible_managed | comment }}
-#
-# /etc/systemd/system/openobserve.service
-# Exposure level ?
-#
+
 [Unit]
-Description=OpenObserve service
-Requires=network.target
+Description=OpenTelemetry Collector
+After=network.target network-online.target
 
 [Service]
-Type=simple
-{% if openobserve_build_enable | bool %}
-ExecStart=/bin/bash -c "{{ oo_home }}/.cargo/bin/openobserve"
-{% else %}
-ExecStart=/bin/bash -c "{{ oo_rootdir }}/openobserve"
-{% endif %}
-EnvironmentFile=/etc/default/openobserve
-{% if openobserve_webproxy_enable | bool %}
-EnvironmentFile=/etc/environment
-{% endif %}
-WorkingDirectory={{ oo_rootdir }}
-User={{ oo_user }}
-Group={{ oo_user }}
-SyslogIdentifier=openobserve
-StandardOutput=append:/var/log/openobserve/message.log
-StandardError=append:/var/log/openobserve/error.log
+ExecStart=/usr/local/bin/otelcol-contrib --config /etc/otel-config.yaml
+Restart=always
+RestartSec=10
+User=openobserve-agent
+Group=openobserve-agent
 
 # Reduce Attack Surface
+# Exposure level 2.2
 NoNewPrivileges=yes
 PrivateTmp=true
 ProtectHome=yes
 ProtectSystem=yes
 # ProtectSystem=strict
-{% if ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 21 %}
+{% if (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 21) or
+      (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 11)
+%}
+#  Error: failed to build pipelines: failed to create "memory_limiter" processor, in pipeline "logs": failed to get total memory, use fixed memory settings (limit_mib): open /proc/self/mountinfo: permission denied
 # ProtectProc=noaccess
+ProtectProc=invisible
 {% endif %}
 
 PrivateDevices=yes
@@ -47,6 +38,7 @@ UMask=077
 ProtectKernelTunables=true
 ProtectKernelModules=yes
 {% if (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 20) or
+      (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 11) or
       (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 8 )
 %}
 ProtectKernelLogs=yes
@@ -63,7 +55,8 @@ RestrictSUIDSGID=yes
 MemoryDenyWriteExecute=yes
 
 # PrivateNetwork=yes
-RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictAddressFamilies=~AF_UNIX
 
 IPAccounting=yes
 {% if openobserve_webproxy_ip|string %}
@@ -100,9 +93,7 @@ CapabilityBoundingSet=~CAP_IPC_LOCK
           ansible_virtualization_type == "docker"
         )
 %}
-{% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int > 18) %}
 SystemCallFilter=@system-service
-{% endif %}
 SystemCallFilter=~@debug @mount @cpu-emulation @obsolete @privileged @resources @reboot @swap @raw-io @module
 # SystemCallFilter=~@debug @mount @cpu-emulation @obsolete @resources @reboot @swap @raw-io @module
 # When system call is disallowed, return error code instead of killing process

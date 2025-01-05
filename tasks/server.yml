@@ -1,0 +1,38 @@
+---
+
+- name: Import Github repo release download
+  ansible.builtin.import_tasks: github-repo-download.yml
+  vars:
+    gh_repo: "{{ oo_repo }}"
+    gh_release: "{{ oo_release }}"
+    # gh_json_query: "assets[*].browser_download_url"  # ok
+    # gh_json_query: "assets[?ends_with(browser_download_url, 'linux-amd64.tar.gz')]"  # ok
+    gh_json_query: "assets[?ends_with(browser_download_url, 'linux-amd64.tar.gz')].browser_download_url"
+  when:
+    - not openobserve_build_enable | bool
+
+- name: Import openobserve tasks
+  ansible.builtin.import_tasks: openobserve.yml
+
+- name: Import source
+  ansible.builtin.import_tasks: source.yml
+  when:
+    - openobserve_build_enable | bool
+
+- name: Import logrotate tasks
+  ansible.builtin.import_tasks: logrotate.yml
+
+- name: Import systemd tasks
+  ansible.builtin.import_tasks: systemd.yml
+
+- name: Check if openobserve port is listening
+  ansible.builtin.wait_for:
+    port: "{{ oo_listen_port }}"
+  when:
+    - not is_container | bool
+
+- name: Import sample tasks
+  ansible.builtin.import_tasks: sample.yml
+  when:
+    - openobserve_sample_load | bool
+    - not is_container | bool

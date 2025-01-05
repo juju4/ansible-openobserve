@@ -7,8 +7,8 @@
   register: cpuinfo
 
 - name: Ensure cpu has aes and sse2 are available - gxhash
-  ansible.builtin.assert:
-    that:
-      - "'+aes' in cpuinfo.stdout"
-      - "'+sse2' in cpuinfo.stdout"
-  when: false
+  ansible.builtin.debug:
+    msg: "WARNING! old cpu without aes and sse2. Need source build."
+  when:
+    - "'+aes' not in cpuinfo.stdout"
+    - "'+sse2' not in cpuinfo.stdout"

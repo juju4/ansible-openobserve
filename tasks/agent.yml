@@ -1,0 +1,86 @@
+---
+# https://raw.githubusercontent.com/openobserve/agents/main/linux/install.sh
+
+- name: Ensure 'openobserve-agent' group exists
+  ansible.builtin.group:
+    name: openobserve-agent
+    state: present
+
+- name: Ensure 'openobserve-agent' user exists
+  ansible.builtin.user:
+    name: openobserve-agent
+    state: present
+    system: true
+    groups:
+      - systemd-journal
+      - openobserve-agent
+    append: yes
+
+- name: Download Otel collector
+  ansible.builtin.get_url:
+    url: "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.111.0/otelcol-contrib_0.111.0_{{ ansible_system | lower }}_{{ oo_arch }}.tar.gz"
+    dest: "{{ install_archives }}/otelcol-contrib.tar.gz"
+    mode: '0600'
+    owner: root
+
+- name: Unarchive Otel collector
+  ansible.builtin.unarchive:
+    src: "{{ install_archives }}/otelcol-contrib.tar.gz"
+    dest: "/usr/local/bin"
+    mode: '0755'
+    owner: root
+    remote_src: true
+    creates: /usr/local/bin/otelcol-contrib
+
+- name: Configure Otel collector
+  ansible.builtin.template:
+    src: otel-config.yaml.j2
+    dest: /etc/otel-config.yaml
+    mode: '0644'
+    owner: root
+  notify:
+    - Restart otel-collector
+
+- name: Configure Otel collector systemd unit
+  ansible.builtin.template:
+    src: systemd-otel-collector.service.j2
+    dest: /etc/systemd/system/otel-collector.service
+    mode: '0644'
+    owner: root
+  notify:
+    - Reload systemd
+    - Restart otel-collector
+
+- name: Ensure logs are readable by collector with acl
+  ansible.posix.acl:
+    path: /var/log
+    entity: openobserve-agent
+    etype: user
+    permissions: rx
+    state: present
+    recursive: true
+
+- name: Server certificate
+  when: openobserve_agent_get_certificate | bool
+  block:
+    - name: Fetch server certificate
+      ansible.builtin.fetch:
+        src: "{{ oo_server_crt_filepath }}"
+        dest: /tmp/
+        flat: true
+      delegate_to: "{{ oo_server_ansible_host }}"
+    - name: Add to agent system
+      ansible.builtin.copy:
+        src: "/tmp/{{ oo_server_crt_filepath | basename }}"
+        dest: "/usr/share/ca-certificates/{{ oo_server_crt_filepath | basename | regex_replace('.crt', '-openobserve.crt') }}"
+        mode: '0644'
+        owner: root
+      notify:
+        - Add to /etc/ca-certificates.conf
+        - update-ca-certificates
+
+- name: Ensure Otel collector service is started and enabled
+  ansible.builtin.service:
+    name: otel-collector
+    state: started
+    enabled: true

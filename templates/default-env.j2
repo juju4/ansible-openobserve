@@ -7,3 +7,6 @@ ZO_HTTP_PORT="{{ oo_listen_port }}"
 ZO_GRPC_PORT="{{ oo_listen_port_grpc }}"
 ZO_COMPACT_DATA_RETENTION_DAYS={{ oo_compact_retention }}
 ZO_TELEMETRY={{ oo_telemetry | bool | lower }}
+ZO_USAGE_REPORTING_ENABLED={{ oo_usage_reporting | bool | lower }}
+ZO_INGEST_FLATTEN_LEVEL={{ oo_ingest_json_flatten_level | int }}
+# RUST_BACKTRACE=full

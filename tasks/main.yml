@@ -12,6 +12,10 @@
   ansible.builtin.set_fact:
     oo_arch: amd64
   when: ansible_architecture == 'x86_64'
+- name: Aarch64 arch
+  ansible.builtin.set_fact:
+    oo_arch: arm64
+  when: ansible_architecture == 'aarch64'
 - name: Debug
   ansible.builtin.debug:
     var: "{{ item }}"
@@ -41,39 +45,23 @@
   register: pkg_result
   until: pkg_result is success
 
-- name: Import Github repo release download
-  ansible.builtin.import_tasks: github-repo-download.yml
-  vars:
-    gh_repo: "{{ oo_repo }}"
-    gh_release: "{{ oo_release }}"
-    # gh_json_query: "assets[*].browser_download_url"  # ok
-    # gh_json_query: "assets[?ends_with(browser_download_url, 'linux-amd64.tar.gz')]"  # ok
-    gh_json_query: "assets[?ends_with(browser_download_url, 'linux-amd64.tar.gz')].browser_download_url"
+- name: Ensure archives folder exists
+  ansible.builtin.file:
+    dest: "{{ install_archives }}"
+    state: directory
+    mode: '0775'
+  become: yes
+  become_user: root
   when:
-    - not openobserve_build_enable | bool
+    - install_archives != '/tmp'
+    - install_archives != '/var/tmp'
 
-- name: Import openobserve tasks
-  ansible.builtin.import_tasks: openobserve.yml
-
-- name: Import source
-  ansible.builtin.import_tasks: source.yml
+- name: Import server
+  ansible.builtin.import_tasks: server.yml
   when:
-    - openobserve_build_enable | bool
+    - openobserve_deploy_type == 'server'
 
-- name: Import logrotate tasks
-  ansible.builtin.import_tasks: logrotate.yml
-
-- name: Import systemd tasks
-  ansible.builtin.import_tasks: systemd.yml
-
-- name: Check if openobserve port is listening
-  ansible.builtin.wait_for:
-    port: "{{ oo_listen_port }}"
+- name: Import agent
+  ansible.builtin.import_tasks: agent.yml
   when:
-    - not is_container | bool
-
-- name: Import sample tasks
-  ansible.builtin.import_tasks: sample.yml
-  when:
-    - openobserve_sample_load | bool
-    - not is_container | bool
+    - openobserve_deploy_type == 'agent'

@@ -14,3 +14,23 @@
   become: yes
   become_user: root
   when: not is_container | bool
+
+- name: Restart otel-collector
+  ansible.builtin.service:
+    name: otel-collector
+    state: restarted
+  become: yes
+  become_user: root
+  when: not is_container | bool
+
+- name: Add to /etc/ca-certificates.conf
+  ansible.builtin.lineinfile:
+    path: /etc/ca-certificates.conf
+    line: "{{ oo_server_crt_filepath | basename | regex_replace('.crt', '-openobserve.crt') }}"
+    mode: '0644'
+    owner: root
+
+- name: Update-ca-certificates
+  ansible.builtin.command:  # noqa no-changed-when
+    cmd: update-ca-certificates
+  become: yes

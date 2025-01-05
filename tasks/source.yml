@@ -30,14 +30,55 @@
     mode: '0700'
     owner: "{{ oo_user }}"
 
-- name: Git clone repository
-  ansible.builtin.git:
-    repo: https://github.com/openobserve/openobserve.git
-    dest: "{{ oo_home }}/build"
-    version: "{{ openobserve_build_version }}"
-    update: no
-  become: yes
-  become_user: "{{ oo_user }}"
+- name: Git
+  block:
+    # error: RPC failed; curl 92 HTTP/2 stream 0 was not closed cleanly: CANCEL (err 8)", "error: 6482 bytes of body are still expected"
+    # error: RPC failed; curl 56 GnuTLS recv error (-9): Error decoding the received TLS packet.\nerror: 19 bytes of body are still expected
+    # same error between git clone and gh repo clone
+    # only workaround is using ssh access
+    # https://github.com/orgs/community/discussions/134430
+    - name: Git config
+      community.general.git_config:
+        name: "{{ item.n }}"
+        value: "{{ item.v }}"
+        scope: file
+        file: "{{ oo_home }}/.gitconfig"
+      become: yes
+      become_user: "{{ oo_user }}"
+      loop: "{{ openobserve_build_gitconfig }}"
+
+    - name: Git clone repository
+      ansible.builtin.git:
+        repo: https://github.com/openobserve/openobserve.git
+        dest: "{{ oo_home }}/build"
+        version: "{{ openobserve_build_version }}"
+        update: no
+      become: yes
+      become_user: "{{ oo_user }}"
+  rescue:
+    - name: Get Github CLI
+      ansible.builtin.get_url:
+        url: "{{ openobserve_build_gh_url }}"
+        checksum: "{{ openobserve_build_gh_hash }}"
+        dest: "{{ install_archives }}/{{ openobserve_build_gh_url | basename }}"
+        mode: '0644'
+        owner: root
+    - name: Install Github CLI
+      ansible.builtin.apt:
+        deb: "{{ install_archives }}/{{ openobserve_build_gh_url | basename }}"
+        state: present
+    - name: Git clone with Github CLI
+      ansible.builtin.shell:
+        cmd: |
+          gh config set git_protocol ssh
+          gh repo clone BeWelcome/rox
+      args:
+        chdir: "{{ oo_home }}"
+        creates: "{{ oo_home }}/build/README.md"
+      environment:
+        GH_TOKEN: "{{ openobserve_build_gh_token }}"
+      become: yes
+      become_user: "{{ oo_user }}"
 
 # error: Gxhash requires aes and sse2 intrinsics.
 - name: Disable gxhash if older cpu

@@ -16,5 +16,5 @@
 - name: Download archive
   ansible.builtin.get_url:
     url: "{{ gh_dl_url }}"
-    dest: "/tmp/{{ gh_dl_url | basename }}"
+    dest: "{{ install_archives }}/{{ gh_dl_url | basename }}"
     mode: '0600'

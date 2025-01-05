@@ -1,24 +1,5 @@
 ---
 
-#
-# if [ -z "$DOWNLOAD_URL" ]; then
-#     echo "Error: Could not find a release asset for platform $PLATFORM and architecture $ARCH."
-#         exit 1
-#         fi
-#
-#         # Download the asset
-#         echo "Downloading the latest release for $PLATFORM and $ARCH..."
-#         curl -L -o latest_release.tar.gz "$DOWNLOAD_URL"
-#
-#         # Extract the downloaded asset
-#         echo "Extracting the downloaded file..."
-#         tar -xzf latest_release.tar.gz
-#
-#         # Cleanup
-#         rm latest_release.tar.gz
-#
-#         echo "Download and extraction complete!"
-
 - name: Ensure openobserve user exists
   ansible.builtin.user:
     name: "{{ oo_user }}"
@@ -37,7 +18,7 @@
 
 - name: Unarchive
   ansible.builtin.unarchive:
-    src: "/tmp/{{ gh_dl_url | basename }}"
+    src: "{{ install_archives }}/{{ gh_dl_url | basename }}"
     dest: "{{ oo_rootdir }}"
     mode: '0755'
     remote_src: true
