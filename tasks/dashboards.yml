@@ -38,6 +38,11 @@
   loop: "{{ openobserve_dashboards_url }}"
   when: false
 
+- name: Ensure curl is present
+  ansible.builtin.package:
+    name: curl
+    state: present
+
 # Give all dashboard and json content
 - name: List dashboards (curl)
   ansible.builtin.command:  # noqa command-instead-of-module no-changed-when
