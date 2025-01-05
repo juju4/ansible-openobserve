@@ -31,6 +31,9 @@
   when:
     - not is_container | bool
 
+- name: Import dashboards
+  ansible.builtin.import_tasks: dashboards.yml
+
 - name: Import sample tasks
   ansible.builtin.import_tasks: sample.yml
   when:

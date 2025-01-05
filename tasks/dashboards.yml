@@ -1,0 +1,60 @@
+---
+
+- name: Download dashboards
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    mode: '0400'
+    dest: "{{ install_archives }}/{{ item | basename }}"
+    owner: "{{ oo_user }}"
+  loop: "{{ openobserve_dashboards_url }}"
+
+# FIXME! breaks idempotence
+- name: Add owner to dashboards
+  ansible.builtin.replace:
+    path: "{{ install_archives }}/{{ item | basename }}"
+    regexp: '"owner": ".*",'
+    replace: '"owner": "{{ openobserve_dashboards_owner }}",'
+    mode: '0400'
+    owner: "{{ oo_user }}"
+  loop: "{{ openobserve_dashboards_url }}"
+  when:
+    - openobserve_dashboards_owner != None
+    - openobserve_dashboards_owner | length > 0
+
+# https://openobserve.ai/docs/api_specs/#?route=post-/api/-org_id-/dashboards
+# FIXME! HTTP Error 401: Unauthorized
+- name: Import dashboards
+  ansible.builtin.uri:
+    url: "http://localhost:5080/api/default/dashboards"
+    method: POST
+    body_format: json
+    src: "{{ install_archives }}/{{ item | basename }}"
+    remote_src: true
+    url_username: "{{ oo_root_user_email }}"
+    url_password: "{{ oo_root_user_pass }}"
+    return_content: yes
+  register: _result
+  until: _result.status == 200
+  loop: "{{ openobserve_dashboards_url }}"
+  when: false
+
+# Give all dashboard and json content
+- name: List dashboards (curl)
+  ansible.builtin.command:  # noqa command-instead-of-module no-changed-when
+    cmd: curl http://localhost:5080/api/default/dashboards -u "{{ oo_root_user_email }}:{{ oo_root_user_pass }}"
+  register: dashboards_list
+  changed_when: false
+
+# FIXME!
+# * idempotence? no and creates duplicate...
+# * org_id/k8s_namespace_name/namespace = No Data Found
+- name: Import dashboards (curl)
+  ansible.builtin.command:  # noqa command-instead-of-module no-changed-when
+    cmd: curl http://localhost:5080/api/default/dashboards -u "{{ oo_root_user_email }}:{{ oo_root_user_pass }}"  -d "@{{ install_archives }}/{{ item | basename }}"
+  register: dashboards_curl
+  failed_when:
+    - "'Error' in dashboards_curl.stdout"
+  # no error, but not working...
+  when:
+    - "(item | basename | regex_replace('.json$', '') | regex_replace('%20', ' ')) not in dashboards_list.stdout"
+  loop: "{{ openobserve_dashboards_url }}"

@@ -60,6 +60,10 @@ openobserve_build_pkgs:
   - build-essential
   # - cargo  # using rustup to get recent one
 
+# https://github.com/openobserve/dashboards
+openobserve_dashboards_url: []
+openobserve_dashboards_owner: "{{ oo_root_user_email }}"
+
 openobserve_build_gitconfig:
   - { n: http.version,
       v: HTTP/1.1
