@@ -109,10 +109,18 @@ jobs:
       - name: After script - curl
         run: |
           set -x
-          curl -v http://127.0.0.1:5080/healthz
-          curl -v http://127.0.0.1:5080/api/default/users
-          curl -v http://127.0.0.1:5080
-          curl -v http://127.0.0.1:5080/web/
+          export curl_args="-v -u root@example.com:root@example.com"
+          curl ${curl_args} http://127.0.0.1:5080/healthz
+          curl ${curl_args} http://127.0.0.1:5080/api/default/users
+          curl ${curl_args} http://127.0.0.1:5080
+          curl ${curl_args} http://127.0.0.1:5080/web/
+          curl ${curl_args} http://127.0.0.1:5080/api/default/_search --data '{"query":{"sql":"SELECT * FROM default","start_time":1674789786006000,"end_time":1674789786006000,"from":0,"size":10}}'
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - export
+        run: |
+          set -x
+          sudo -H -u _openobserve env RUST_BACKTRACE=full ~/openobserve/openobserve export --stream journald
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - cpu
