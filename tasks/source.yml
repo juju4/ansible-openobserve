@@ -71,7 +71,7 @@
       ansible.builtin.shell:
         cmd: |
           gh config set git_protocol ssh
-          gh repo clone BeWelcome/rox
+          gh repo clone openobserve/openobserve
       args:
         chdir: "{{ oo_home }}"
         creates: "{{ oo_home }}/build/README.md"
@@ -98,6 +98,20 @@
     }
   when:
     - "'+aes' not in cpuinfo.stdout"
+
+# Github CI
+# "An I/O error happened. Please make sure you can access the file." [...]
+# "See https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-changed for more information."
+- name: Cargo clean
+  ansible.builtin.command:  # noqa no-changed-when
+    cmd: cargo clean
+  args:
+    chdir: "{{ oo_home }}/build"
+  environment:
+    PATH: "{{ oo_home }}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    RUSTFLAGS: "-C target-cpu=native"
+  become: yes
+  become_user: "{{ oo_user }}"
 
 - name: Build openobserve
   ansible.builtin.command:
