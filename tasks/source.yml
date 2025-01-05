@@ -112,6 +112,9 @@
     RUSTFLAGS: "-C target-cpu=native"
   become: yes
   become_user: "{{ oo_user }}"
+  register: cargo_clean
+  changed_when:
+    - "'Removed 0 files' not in cargo_clean.stderr"
 
 - name: Build openobserve
   ansible.builtin.command:
@@ -122,6 +125,8 @@
   environment:
     PATH: "{{ oo_home }}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     RUSTFLAGS: "-C target-cpu=native"
+    RUST_LOG: debug
+    RUST_BACKTRACE: '1'
   become: yes
   become_user: "{{ oo_user }}"
   # async: "{{ openobserve_build_max | default(3600) }}"
