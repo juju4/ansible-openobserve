@@ -110,6 +110,13 @@ jobs:
           systemd-analyze --no-pager verify openobserve || true
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - files
+        run: |
+          ls -la /var/_openobserve/openobserve/ || true
+          ls -la /var/_openobserve/.cargo/bin/ || true
+          ls -la /var/_openobserve/build || true
+        if: ${{ always() }}
+        continue-on-error: true
       - name: After script - curl
         run: |
           set -x
