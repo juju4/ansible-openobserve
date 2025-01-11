@@ -71,6 +71,10 @@ openobserve_build_gitconfig:
   - { n: http.postBuffer,
       v: 1048576000
   }
+  # https://stackoverflow.com/questions/78966387/rust-tauri-build-error-failed-to-determine-package-fingerprint-for-build-scri
+  - { n: core.excludesFile,
+      v: /var/_openobserve/build/.gitignore
+  }
 openobserve_build_gh_url: https://github.com/cli/cli/releases/download/v2.64.0/gh_2.64.0_linux_amd64.deb
 openobserve_build_gh_hash: 'sha256:ef110bb82cdb9c2fab65ff12718f20e133cf7b3d9eac72280ea8de98ab1c464f'
 install_archives: /var/_install
