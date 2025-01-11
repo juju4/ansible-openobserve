@@ -133,3 +133,9 @@ jobs:
           cat /proc/cpuinfo
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - build info
+        run: |
+          set -x
+          sudo ls -la /var/_openobserve/build/src/proto
+        if: ${{ always() }}
+        continue-on-error: true
