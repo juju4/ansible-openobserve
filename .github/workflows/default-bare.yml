@@ -131,7 +131,8 @@ jobs:
       - name: After script - export
         run: |
           set -x
-          sudo -H -u _openobserve env RUST_BACKTRACE=full ~/openobserve/openobserve export --stream journald
+          sudo -H -u _openobserve env RUST_BACKTRACE=full /var/_openobserve/openobserve/openobserve export --stream journald || true
+          sudo -H -u _openobserve env RUST_BACKTRACE=full /var/_openobserve/.cargo/bin/openobserve export --stream journald || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - cpu
