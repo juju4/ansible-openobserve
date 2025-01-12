@@ -108,6 +108,7 @@ jobs:
           systemd-analyze --no-pager security || true
           systemd-analyze --no-pager security openobserve || true
           systemd-analyze --no-pager verify openobserve || true
+          cat /etc/systemd/system/openobserve.service || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - journalctl
