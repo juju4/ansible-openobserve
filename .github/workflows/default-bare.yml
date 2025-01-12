@@ -120,11 +120,14 @@ jobs:
       - name: After script - files
         run: |
           set -x
-          sudo ls -la /var/_openobserve/openobserve/ || true
-          sudo /var/_openobserve/openobserve/openobserve -V || true
-          sudo ls -la /var/_openobserve/.cargo/bin/ || true
-          sudo /var/_openobserve/.cargo/bin/openobserve -V || true
-          sudo ls -la /var/_openobserve/build || true
+          if [ -x /var/_openobserve/openobserve/openobserve ]; then
+            sudo ls -la /var/_openobserve/openobserve/ || true
+            sudo /var/_openobserve/openobserve/openobserve -V || true
+          elif [ -x /var/_openobserve/.cargo/bin/openobserve ]; then
+            sudo ls -la /var/_openobserve/.cargo/bin/ || true
+            sudo /var/_openobserve/.cargo/bin/openobserve -V || true
+            sudo ls -la /var/_openobserve/build || true
+          fi
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - curl
@@ -136,6 +139,13 @@ jobs:
           curl ${curl_args} http://127.0.0.1:5080
           curl ${curl_args} http://127.0.0.1:5080/web/
           curl ${curl_args} http://127.0.0.1:5080/api/default/_search --data '{"query":{"sql":"SELECT * FROM default","start_time":1674789786006000,"end_time":1674789786006000,"from":0,"size":10}}'
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - logs
+        run: |
+          set -x
+          tail -500 /var/log/openobserve/message.log
+          tail -500 /var/log/openobserve/error.log
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - export
@@ -155,5 +165,13 @@ jobs:
         run: |
           set -x
           sudo ls -la /var/_openobserve/build/src/proto
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - manual test run
+        run: |
+          set -x
+          . /etc/default/openobserve
+          [ -x /var/_openobserve/openobserve/openobserve ] && sudo -u _openobserve /var/_openobserve/openobserve/openobserve
+          [ -x /var/_openobserve/.cargo/bin/openobserve ] && sudo -u _openobserve /var/_openobserve/.cargo/bin/openobserve
         if: ${{ always() }}
         continue-on-error: true
