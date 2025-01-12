@@ -118,8 +118,11 @@ jobs:
         continue-on-error: true
       - name: After script - files
         run: |
+          set -x
           sudo ls -la /var/_openobserve/openobserve/ || true
+          sudo /var/_openobserve/openobserve/openobserve -V || true
           sudo ls -la /var/_openobserve/.cargo/bin/ || true
+          sudo /var/_openobserve/.cargo/bin/openobserve -V || true
           sudo ls -la /var/_openobserve/build || true
         if: ${{ always() }}
         continue-on-error: true
