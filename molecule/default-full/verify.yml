@@ -1,7 +1,7 @@
 ---
 
 - name: Verify
-  hosts: openobserve
+  hosts: all
   vars:
     oo_root_user_user: root@example.com
     # pragma: allowlist secret
