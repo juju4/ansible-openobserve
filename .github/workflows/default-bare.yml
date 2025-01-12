@@ -144,8 +144,8 @@ jobs:
       - name: After script - logs
         run: |
           set -x
-          tail -500 /var/log/openobserve/message.log
-          tail -500 /var/log/openobserve/error.log
+          sudo tail -500 /var/log/openobserve/message.log
+          sudo tail -500 /var/log/openobserve/error.log
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - export
@@ -170,7 +170,7 @@ jobs:
       - name: After script - manual test run
         run: |
           set -x
-          . /etc/default/openobserve
+          source <(sudo cat /etc/default/openobserve)
           [ -x /var/_openobserve/openobserve/openobserve ] && sudo -u _openobserve /var/_openobserve/openobserve/openobserve
           [ -x /var/_openobserve/.cargo/bin/openobserve ] && sudo -u _openobserve /var/_openobserve/.cargo/bin/openobserve
         if: ${{ always() }}
