@@ -94,7 +94,7 @@
         url_password: "{{ oo_root_user_pass }}"
         return_content: yes
       changed_when: false
-      ignore_errors: true
+      ignore_errors: true  # noqa ignore-errors
       loop:
         - "/web/"
         - "/api/{{ org_id }}/dashboards"
@@ -122,6 +122,6 @@
             "timeout": 0
           }
       changed_when: false
-      ignore_errors: true
+      ignore_errors: true  # noqa ignore-errors
       when:
         - not is_container|bool
