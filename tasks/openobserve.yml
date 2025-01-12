@@ -21,6 +21,7 @@
     src: "{{ install_archives }}/{{ gh_dl_url | basename }}"
     dest: "{{ oo_rootdir }}"
     mode: '0755'
+    owner: "{{ oo_user }}"
     remote_src: true
   when:
     - not openobserve_build_enable | bool
