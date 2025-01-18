@@ -2,19 +2,19 @@
 
 - name: Linux platform
   ansible.builtin.set_fact:
-    oo_platform: linux
+    openobserve_platform: linux
   when: ansible_system == 'Linux'
 - name: Darwin platform
   ansible.builtin.set_fact:
-    oo_platform: darwin
+    openobserve_platform: darwin
   when: ansible_system == 'MacOS'
 - name: X86_64 arch
   ansible.builtin.set_fact:
-    oo_arch: amd64
+    openobserve_arch: amd64
   when: ansible_architecture == 'x86_64'
 - name: Aarch64 arch
   ansible.builtin.set_fact:
-    oo_arch: arm64
+    openobserve_arch: arm64
   when: ansible_architecture == 'aarch64'
 - name: Debug
   ansible.builtin.debug:

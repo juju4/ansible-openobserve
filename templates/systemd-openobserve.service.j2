@@ -10,17 +10,17 @@ Requires=network.target
 [Service]
 Type=simple
 {% if openobserve_build_enable | bool %}
-ExecStart=/bin/bash -c "{{ oo_home }}/.cargo/bin/openobserve"
+ExecStart=/bin/bash -c "{{ openobserve_home }}/.cargo/bin/openobserve"
 {% else %}
-ExecStart=/bin/bash -c "{{ oo_rootdir }}/openobserve"
+ExecStart=/bin/bash -c "{{ openobserve_rootdir }}/openobserve"
 {% endif %}
 EnvironmentFile=/etc/default/openobserve
 {% if openobserve_webproxy_enable | bool %}
 EnvironmentFile=/etc/environment
 {% endif %}
-WorkingDirectory={{ oo_rootdir }}
-User={{ oo_user }}
-Group={{ oo_user }}
+WorkingDirectory={{ openobserve_rootdir }}
+User={{ openobserve_user }}
+Group={{ openobserve_user }}
 SyslogIdentifier=openobserve
 StandardOutput=append:/var/log/openobserve/message.log
 StandardError=append:/var/log/openobserve/error.log

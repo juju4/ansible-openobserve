@@ -18,7 +18,7 @@
 
 - name: Download Otel collector
   ansible.builtin.get_url:
-    url: "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.111.0/otelcol-contrib_0.111.0_{{ ansible_system | lower }}_{{ oo_arch }}.tar.gz"
+    url: "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.111.0/otelcol-contrib_0.111.0_{{ ansible_system | lower }}_{{ openobserve_arch }}.tar.gz"
     dest: "{{ install_archives }}/otelcol-contrib.tar.gz"
     mode: '0600'
     owner: root
@@ -65,14 +65,14 @@
   block:
     - name: Fetch server certificate
       ansible.builtin.fetch:
-        src: "{{ oo_server_crt_filepath }}"
+        src: "{{ openobserve_server_crt_filepath }}"
         dest: /tmp/
         flat: true
-      delegate_to: "{{ oo_server_ansible_host }}"
+      delegate_to: "{{ openobserve_server_ansible_host }}"
     - name: Add to agent system
       ansible.builtin.copy:
-        src: "/tmp/{{ oo_server_crt_filepath | basename }}"
-        dest: "/usr/share/ca-certificates/{{ oo_server_crt_filepath | basename | regex_replace('.crt', '-openobserve.crt') }}"
+        src: "/tmp/{{ openobserve_server_crt_filepath | basename }}"
+        dest: "/usr/share/ca-certificates/{{ openobserve_server_crt_filepath | basename | regex_replace('.crt', '-openobserve.crt') }}"
         mode: '0644'
         owner: root
       notify:

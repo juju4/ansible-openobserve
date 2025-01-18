@@ -5,29 +5,29 @@ openobserve_deploy_type: 'server'
 # openobserve_agent_server_url: https://SERVER/api/default/
 # openobserve_agent_auth_key:
 openobserve_agent_get_certificate: false
-# oo_server_ansible_host:
-# oo_server_crt_filepath: /etc/ssl/certs/OOSERVER.crt
+# openobserve_server_ansible_host:
+# openobserve_server_crt_filepath: /etc/ssl/certs/OOSERVER.crt
 
-oo_repo: openobserve/openobserve
-oo_release: latest
+openobserve_repo: openobserve/openobserve
+openobserve_release: latest
 
-oo_user: _openobserve
-oo_home: /var/_openobserve
-oo_rootdir: /var/_openobserve/openobserve
+openobserve_user: _openobserve
+openobserve_home: /var/_openobserve
+openobserve_rootdir: /var/_openobserve/openobserve
 
 # Note: localhost and ::1 don't seem accepted
-oo_listen_host: 127.0.0.1
-oo_listen_port: 5080
-oo_listen_port_grpc: 5081
-oo_compact_retention: 365
-oo_telemetry: true
-oo_usage_reporting: true
+openobserve_listen_host: 127.0.0.1
+openobserve_listen_port: 5080
+openobserve_listen_port_grpc: 5081
+openobserve_compact_retention: 365
+openobserve_telemetry: true
+openobserve_usage_reporting: true
 # https://openobserve.ai/docs/api/ingestion/logs/json/#flattening-of-the-json-structure
-oo_ingest_json_flatten_level: 3
+openobserve_ingest_json_flatten_level: 3
 
-oo_env_variables_template: "default-env.j2"
-oo_root_user_email: root@example.com
-oo_root_user_pass: root@example.com
+openobserve_env_variables_template: "default-env.j2"
+openobserve_root_user_email: root@example.com
+openobserve_root_user_pass: root@example.com
 
 openobserve_sample_load: true
 
@@ -62,7 +62,7 @@ openobserve_build_pkgs:
 
 # https://github.com/openobserve/dashboards
 openobserve_dashboards_url: []
-openobserve_dashboards_owner: "{{ oo_root_user_email }}"
+openobserve_dashboards_owner: "{{ openobserve_root_user_email }}"
 
 openobserve_build_gitconfig:
   - { n: http.version,

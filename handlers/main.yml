@@ -26,7 +26,7 @@
 - name: Add to /etc/ca-certificates.conf
   ansible.builtin.lineinfile:
     path: /etc/ca-certificates.conf
-    line: "{{ oo_server_crt_filepath | basename | regex_replace('.crt', '-openobserve.crt') }}"
+    line: "{{ openobserve_server_crt_filepath | basename | regex_replace('.crt', '-openobserve.crt') }}"
     mode: '0644'
     owner: root
 

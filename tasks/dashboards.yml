@@ -5,7 +5,7 @@
     url: "{{ item }}"
     mode: '0400'
     dest: "{{ install_archives }}/{{ item | basename }}"
-    owner: "{{ oo_user }}"
+    owner: "{{ openobserve_user }}"
   loop: "{{ openobserve_dashboards_url }}"
 
 # FIXME! breaks idempotence
@@ -15,7 +15,7 @@
     regexp: '"owner": ".*",'
     replace: '"owner": "{{ openobserve_dashboards_owner }}",'
     mode: '0400'
-    owner: "{{ oo_user }}"
+    owner: "{{ openobserve_user }}"
   loop: "{{ openobserve_dashboards_url }}"
   when:
     - openobserve_dashboards_owner != None
@@ -30,8 +30,8 @@
     body_format: json
     src: "{{ install_archives }}/{{ item | basename }}"
     remote_src: true
-    url_username: "{{ oo_root_user_email }}"
-    url_password: "{{ oo_root_user_pass }}"
+    url_username: "{{ openobserve_root_user_email }}"
+    url_password: "{{ openobserve_root_user_pass }}"
     return_content: yes
   register: _result
   until: _result.status == 200
@@ -46,7 +46,7 @@
 # Give all dashboard and json content
 - name: List dashboards (curl)
   ansible.builtin.command:  # noqa command-instead-of-module no-changed-when
-    cmd: curl http://localhost:5080/api/default/dashboards -u "{{ oo_root_user_email }}:{{ oo_root_user_pass }}"
+    cmd: curl http://localhost:5080/api/default/dashboards -u "{{ openobserve_root_user_email }}:{{ openobserve_root_user_pass }}"
   register: dashboards_list
   changed_when: false
 
@@ -55,7 +55,7 @@
 # * org_id/k8s_namespace_name/namespace = No Data Found
 - name: Import dashboards (curl)
   ansible.builtin.command:  # noqa command-instead-of-module no-changed-when
-    cmd: curl http://localhost:5080/api/default/dashboards -u "{{ oo_root_user_email }}:{{ oo_root_user_pass }}"  -d "@{{ install_archives }}/{{ item | basename }}"
+    cmd: curl http://localhost:5080/api/default/dashboards -u "{{ openobserve_root_user_email }}:{{ openobserve_root_user_pass }}"  -d "@{{ install_archives }}/{{ item | basename }}"
   register: dashboards_curl
   failed_when:
     - "'Error' in dashboards_curl.stdout"

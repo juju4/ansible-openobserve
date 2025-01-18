@@ -1,12 +1,12 @@
 {{ ansible_managed | comment }}
 # Note: export is required for shell usage, but not for systemd EnvironmentFile
-ZO_ROOT_USER_EMAIL="{{ oo_root_user_email }}"
-ZO_ROOT_USER_PASSWORD="{{ oo_root_user_pass }}"
-ZO_HTTP_ADDR="{{ oo_listen_host }}"
-ZO_HTTP_PORT="{{ oo_listen_port }}"
-ZO_GRPC_PORT="{{ oo_listen_port_grpc }}"
-ZO_COMPACT_DATA_RETENTION_DAYS={{ oo_compact_retention }}
-ZO_TELEMETRY={{ oo_telemetry | bool | lower }}
-ZO_USAGE_REPORTING_ENABLED={{ oo_usage_reporting | bool | lower }}
-ZO_INGEST_FLATTEN_LEVEL={{ oo_ingest_json_flatten_level | int }}
+ZO_ROOT_USER_EMAIL="{{ openobserve_root_user_email }}"
+ZO_ROOT_USER_PASSWORD="{{ openobserve_root_user_pass }}"
+ZO_HTTP_ADDR="{{ openobserve_listen_host }}"
+ZO_HTTP_PORT="{{ openobserve_listen_port }}"
+ZO_GRPC_PORT="{{ openobserve_listen_port_grpc }}"
+ZO_COMPACT_DATA_RETENTION_DAYS={{ openobserve_compact_retention }}
+ZO_TELEMETRY={{ openobserve_telemetry | bool | lower }}
+ZO_USAGE_REPORTING_ENABLED={{ openobserve_usage_reporting | bool | lower }}
+ZO_INGEST_FLATTEN_LEVEL={{ openobserve_ingest_json_flatten_level | int }}
 # RUST_BACKTRACE=full

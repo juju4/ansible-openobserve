@@ -3,10 +3,10 @@
 - name: Verify
   hosts: all
   vars:
-    oo_root_user_user: root@example.com
+    openobserve_root_user_user: root@example.com
     # pragma: allowlist secret
-    oo_root_user_pass: root@example.com
-    oo_home: /var/_openobserve
+    openobserve_root_user_pass: root@example.com
+    openobserve_home: /var/_openobserve
     binary_oo: "/var/_openobserve/openobserve/openobserve"
     ports:
       # openobserve
@@ -90,8 +90,8 @@
     - name: Check few queries
       ansible.builtin.uri:
         url: "http://localhost:5080{{ item }}"
-        url_username: "{{ oo_root_user_user }}"
-        url_password: "{{ oo_root_user_pass }}"
+        url_username: "{{ openobserve_root_user_user }}"
+        url_password: "{{ openobserve_root_user_pass }}"
         return_content: yes
       changed_when: false
       ignore_errors: true  # noqa ignore-errors
@@ -108,8 +108,8 @@
     - name: Check last logs
       ansible.builtin.uri:
         url: "http://localhost:5080/api/default/default/_json"
-        url_username: "{{ oo_root_user_user }}"
-        url_password: "{{ oo_root_user_pass }}"
+        url_username: "{{ openobserve_root_user_user }}"
+        url_password: "{{ openobserve_root_user_pass }}"
         method: POST
         body: |
           {

@@ -14,8 +14,8 @@
     filebeat_output_elasticsearch_hosts:
       - "localhost:5080"
     filebeat_output_elasticsearch_auth:
-      username: "{{ oo_root_user_email }}"
-      password: "{{ oo_root_user_pass }}"
+      username: "{{ openobserve_root_user_email }}"
+      password: "{{ openobserve_root_user_pass }}"
     filebeat_template: "{{ lookup('env','GITHUB_WORKSPACE') }}/juju4.openobserve/templates/filebeat-openobserve.yml.j2"
     filebeat_inputs:
       - type: log
@@ -63,6 +63,6 @@
         (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
   roles:
     - geerlingguy.filebeat
-    - { role: juju4.openobserve, openobserve_deploy_type: 'agent', oo_server_ansible_host: localhost }
+    - { role: juju4.openobserve, openobserve_deploy_type: 'agent', openobserve_server_ansible_host: localhost }
     - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
     - juju4.harden_nginx
