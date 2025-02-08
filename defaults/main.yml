@@ -7,6 +7,7 @@ openobserve_deploy_type: 'server'
 openobserve_agent_get_certificate: false
 # openobserve_server_ansible_host:
 # openobserve_server_crt_filepath: /etc/ssl/certs/OOSERVER.crt
+openobserve_agent_filelog_include: [ /var/log/**log ]
 
 openobserve_repo: openobserve/openobserve
 openobserve_release: latest

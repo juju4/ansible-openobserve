@@ -4,7 +4,7 @@ receivers:
   journald:
     directory: /var/log/journal
   filelog/std:
-    include: [ /var/log/**log ]
+    include: {{ openobserve_agent_filelog_include | string }}
     # start_at: beginning
   hostmetrics:
     root_path: /
