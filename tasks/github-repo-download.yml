@@ -7,6 +7,7 @@
     url: "https://api.github.com/repos/{{ gh_repo }}/releases/{{ gh_release | default('latest') }}"
     return_content: true
   register: gh_info
+  until: gh_info is success
   changed_when: false
 
 - name: Set fact
