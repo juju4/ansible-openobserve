@@ -77,7 +77,7 @@
         owner: root
       notify:
         - Add to /etc/ca-certificates.conf
-        - update-ca-certificates
+        - Update-ca-certificates
 
 - name: Ensure Otel collector service is started and enabled
   ansible.builtin.service:
