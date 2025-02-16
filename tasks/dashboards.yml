@@ -59,6 +59,7 @@
   register: dashboards_curl
   failed_when:
     - "'Error' in dashboards_curl.stdout"
+    - "'Content type error' in dashboards_curl.stdout"
   # no error, but not working...
   when:
     - "(item | basename | regex_replace('.json$', '') | regex_replace('%20', ' ')) not in dashboards_list.stdout"
