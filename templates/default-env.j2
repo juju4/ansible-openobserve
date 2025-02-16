@@ -10,3 +10,13 @@ ZO_TELEMETRY={{ openobserve_telemetry | bool | lower }}
 ZO_USAGE_REPORTING_ENABLED={{ openobserve_usage_reporting | bool | lower }}
 ZO_INGEST_FLATTEN_LEVEL={{ openobserve_ingest_json_flatten_level | int }}
 # RUST_BACKTRACE=full
+
+# Optimize memory?
+# https://github.com/openobserve/openobserve/discussions/2711
+# ZO_MAX_FILE_SIZE_IN_MEMORY=256
+# ZO_MEMORY_CACHE_ENABLED=true
+# ZO_MEMORY_CACHE_MAX_SIZE=0
+# ZO_MEMORY_CACHE_DATAFUSION_MAX_SIZE=0
+# ZO_COMPACT_MAX_FILE_SIZE=256
+# ZO_COMPACT_INTERVAL=
+# ZO_FILE_MOVE_THREAD_NUM=0
