@@ -8,6 +8,11 @@
     no_proxy: "{{ lookup('env', 'no_proxy') }}"
   remote_user: root
   vars:
+    openobserve_dashboards_url:
+      - https://github.com/openobserve/dashboards/raw/refs/heads/main/OpenObserve/OpenObserve%20Internals.dashboard.json
+      - https://github.com/openobserve/dashboards/raw/refs/heads/main/OpenObserve/OpenObserve%20Infrastructure.dashboard.json
+      - https://github.com/openobserve/dashboards/raw/refs/heads/main/Usage/Usage%20_%20Overall.dashboard.json
+      - https://github.com/openobserve/dashboards/raw/refs/heads/main/Usage/Usage%20_%20Org.dashboard.json
     # https://openobserve.ai/docs/ingestion/logs/filebeat/
     filebeat_version: 8.x
     filebeat_output_elasticsearch_enabled: true
