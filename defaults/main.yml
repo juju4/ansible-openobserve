@@ -3,6 +3,7 @@
 openobserve_deploy_type: 'server'
 # openobserve_deploy_type: 'agent'
 # openobserve_agent_server_url: https://SERVER/api/default/
+openobserve_agent_auth_key_retrieve: true
 # openobserve_agent_auth_key:
 openobserve_agent_get_certificate: false
 # openobserve_server_ansible_host:

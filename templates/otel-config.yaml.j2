@@ -38,12 +38,16 @@ extensions:
 exporters:
   otlphttp/openobserve:
     endpoint: {{ openobserve_agent_server_url }}
+{% if openobserve_agent_auth_key is defined and openobserve_agent_auth_key != None and openobserve_agent_auth_key | length > 0 %}
     headers:
       Authorization: "Basic {{ openobserve_agent_auth_key }}"
+{% endif %}
   otlphttp/openobserve_journald:
     endpoint: {{ openobserve_agent_server_url }}
     headers:
+{% if openobserve_agent_auth_key is defined and openobserve_agent_auth_key != None and openobserve_agent_auth_key | length > 0 %}
       Authorization: "Basic {{ openobserve_agent_auth_key }}"
+{% endif %}
       stream-name: journald
 
 service:
