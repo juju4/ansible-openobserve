@@ -109,6 +109,8 @@ jobs:
           systemd-analyze --no-pager security openobserve || true
           systemd-analyze --no-pager verify openobserve || true
           cat /etc/systemd/system/openobserve.service || true
+          systemctl -l --no-pager status otel-collector || true
+          systemctl -l --no-pager status filebeat || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - journalctl
@@ -133,12 +135,18 @@ jobs:
       - name: After script - curl
         run: |
           set -x
-          export curl_args="-v -u root@example.com:root@example.com"
+          export curl_args="-v --no-progress-meter -u root@example.com:root@example.com"
           curl ${curl_args} http://127.0.0.1:5080/healthz
           curl ${curl_args} http://127.0.0.1:5080/api/default/users
+          curl ${curl_args} http://127.0.0.1:5080/api/default/dashboards
+          curl ${curl_args} http://127.0.0.1:5080/api/default/functions
+          curl ${curl_args} http://127.0.0.1:5080/api/default/pipelines
+          curl ${curl_args} http://127.0.0.1:5080/api/default/alerts
+          curl ${curl_args} http://127.0.0.1:5080/api/default/settings
           curl ${curl_args} http://127.0.0.1:5080
           curl ${curl_args} http://127.0.0.1:5080/web/
-          curl ${curl_args} http://127.0.0.1:5080/api/default/_search --data '{"query":{"sql":"SELECT * FROM default","start_time":1674789786006000,"end_time":1674789786006000,"from":0,"size":10}}'
+          curl ${curl_args} http://127.0.0.1:5080/api/default/_search --data '{"query":{"sql":"SELECT * FROM \"default\"","start_time":1674789786006000,"end_time":1767247261000000,"from":0,"size":10}}' || true
+          curl ${curl_args} http://127.0.0.1:5080/api/default/_search --data '{"query":{"sql":"SELECT * FROM \"journald\"","start_time":1674789786006000,"end_time":1767247261000000,"from":0,"size":10}}' || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - logs
