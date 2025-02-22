@@ -11,6 +11,15 @@ ZO_USAGE_REPORTING_ENABLED={{ openobserve_usage_reporting | bool | lower }}
 ZO_INGEST_FLATTEN_LEVEL={{ openobserve_ingest_json_flatten_level | int }}
 # RUST_BACKTRACE=full
 
+# SMTP
+ZO_SMTP_ENABLED={{ openobserve_smtp_enabled }}
+ZO_SMTP_HOST="{{ openobserve_smtp_host }}"
+ZO_SMTP_PORT={{ openobserve_smtp_port }}
+ZO_SMTP_USER_NAME="{{ openobserve_smtp_user_name }}"
+ZO_SMTP_PASSWORD="{{ openobserve_smtp_password }}"
+ZO_SMTP_FROM_EMAIL="{{ openobserve_smtp_from_email }}"
+ZO_SMTP_ENCRYPTION="{{ openobserve_smtp_encryption }}"
+
 # Optimize memory?
 # https://github.com/openobserve/openobserve/discussions/2711
 # ZO_MAX_FILE_SIZE_IN_MEMORY=256

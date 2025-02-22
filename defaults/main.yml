@@ -33,6 +33,13 @@ openobserve_ingest_json_flatten_level: 3
 openobserve_env_variables_template: "default-env.j2"
 openobserve_root_user_email: root@example.com
 openobserve_root_user_pass: root@example.com
+openobserve_smtp_enabled: false
+openobserve_smtp_host: smtp.example.com
+openobserve_smtp_port: 587
+openobserve_smtp_user_name:
+openobserve_smtp_password:
+openobserve_smtp_from_email: openobserve-noreply@example.com
+openobserve_smtp_encryption: starttls
 
 openobserve_sample_load: true
 
