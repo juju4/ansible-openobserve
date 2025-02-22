@@ -2,6 +2,9 @@
 
 openobserve_deploy_type: 'server'
 # openobserve_deploy_type: 'agent'
+# "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v{{ openobserve_otel_version }}/otelcol-contrib_{{ openobserve_otel_version }}_{{ ansible_system | lower }}_{{ openobserve_arch }}.tar.gz"
+openobserve_otel_version: 0.120.0
+openobserve_otel_hash: 'sha256:81bf885bc9a86705feb3c113c5a356571390e3601eb651ffcf2b3428f6571adb'
 # openobserve_agent_server_url: https://SERVER/api/default/
 openobserve_agent_auth_key_retrieve: true
 # openobserve_agent_auth_key:

@@ -16,12 +16,29 @@
       - openobserve-agent
     append: yes
 
-- name: Download Otel collector
-  ansible.builtin.get_url:
-    url: "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.111.0/otelcol-contrib_0.111.0_{{ ansible_system | lower }}_{{ openobserve_arch }}.tar.gz"
-    dest: "{{ install_archives }}/otelcol-contrib.tar.gz"
-    mode: '0600'
-    owner: root
+- name: Download
+  block:
+    - name: Download Otel collector
+      ansible.builtin.get_url:
+        url: "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v{{ openobserve_otel_version }}/otelcol-contrib_{{ openobserve_otel_version }}_{{ ansible_system | lower }}_{{ openobserve_arch }}.tar.gz"
+        dest: "{{ install_archives }}/otelcol-contrib.tar.gz"
+        mode: '0600'
+        owner: root
+        checksum: "{{ openobserve_otel_hash | default(omit) }}"
+  rescue:
+    - name: Download Otel collector from orchestrator
+      ansible.builtin.get_url:
+        url: "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v{{ openobserve_otel_version }}/otelcol-contrib_{{ openobserve_otel_version }}_{{ ansible_system | lower }}_{{ openobserve_arch }}.tar.gz"
+        dest: "/tmp/otelcol-contrib-{{ openobserve_otel_version }}.tar.gz"
+        mode: '0644'
+        checksum: "{{ openobserve_otel_hash | default(omit) }}"
+      connection: local
+    - name: Copy Otel collector to target
+      ansible.builtin.copy:
+        src: "/tmp/otelcol-contrib-{{ openobserve_otel_version }}.tar.gz"
+        dest: "{{ install_archives }}/otelcol-contrib.tar.gz"
+        mode: '0600'
+        owner: root
 
 - name: Unarchive Otel collector
   ansible.builtin.unarchive:
