@@ -55,11 +55,15 @@
 # * org_id/k8s_namespace_name/namespace = No Data Found
 - name: Import dashboards (curl)
   ansible.builtin.command:  # noqa command-instead-of-module no-changed-when
-    cmd: curl http://localhost:5080/api/default/dashboards -u "{{ openobserve_root_user_email }}:{{ openobserve_root_user_pass }}"  -d "@{{ install_archives }}/{{ item | basename }}"
+    cmd: >-
+      curl http://localhost:5080/api/default/dashboards
+        -u "{{ openobserve_root_user_email }}:{{ openobserve_root_user_pass }}"
+        --json "@{{ install_archives }}/{{ item | basename }}"
   register: dashboards_curl
   failed_when:
     - "'Error' in dashboards_curl.stdout"
     - "'Content type error' in dashboards_curl.stdout"
+    - "'URL rejected: Malformed input to a URL function' in dashboards_curl.stdout"
   # no error, but not working...
   when:
     - "(item | basename | regex_replace('.json$', '') | regex_replace('%20', ' ')) not in dashboards_list.stdout"
