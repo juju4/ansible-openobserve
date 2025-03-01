@@ -132,6 +132,12 @@ jobs:
           fi
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - dashboards
+        run: |
+          set -x
+          sudo bash -c 'for f in /var/_install/*.json; do python3 -mjson.tool $f; done'
+        if: ${{ always() }}
+        continue-on-error: true
       - name: After script - curl
         run: |
           set -x
