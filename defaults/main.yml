@@ -20,6 +20,7 @@ openobserve_user: _openobserve
 openobserve_home: /var/_openobserve
 openobserve_rootdir: /var/_openobserve/openobserve
 
+openobserve_web_url: "https://{{ ansible_fqdn }}"
 # Note: localhost and ::1 don't seem accepted
 openobserve_listen_host: 127.0.0.1
 openobserve_listen_port: 5080
