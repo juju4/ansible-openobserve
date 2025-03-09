@@ -66,7 +66,7 @@ is_container: false
 
 # custom build
 openobserve_build_enable: false
-openobserve_build_version: fde562d3920ce657355d7dbff44c607cd991c8aa
+openobserve_build_version: 1684427e52143137bccae17091531df573fa6c20
 openobserve_build_pkgs:
   - git
   - protobuf-compiler
