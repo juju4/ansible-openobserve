@@ -71,10 +71,13 @@
 
 - name: Configure Otel collector
   ansible.builtin.template:
-    src: otel-config.yaml.j2
+    src: "{{ openobserve_otel_config_template }}.j2"
     dest: /etc/otel-config.yaml
-    mode: '0644'
+    mode: '0640'
     owner: root
+    group: openobserve-agent
+    validate: 'otelcol-contrib validate --config=%s'
+    backup: "{{ openobserve_backup | default(true) }}"
   notify:
     - Restart otel-collector
 

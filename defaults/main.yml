@@ -5,6 +5,7 @@ openobserve_deploy_type: 'server'
 # "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v{{ openobserve_otel_version }}/otelcol-contrib_{{ openobserve_otel_version }}_{{ ansible_system | lower }}_{{ openobserve_arch }}.tar.gz"
 openobserve_otel_version: 0.120.0
 openobserve_otel_hash: 'sha256:81bf885bc9a86705feb3c113c5a356571390e3601eb651ffcf2b3428f6571adb'
+openobserve_otel_config_template: otel-config.yaml
 # openobserve_agent_server_url: https://SERVER/api/default/
 openobserve_agent_auth_key_retrieve: true
 # openobserve_agent_auth_key:
@@ -12,6 +13,14 @@ openobserve_agent_get_certificate: false
 # openobserve_server_ansible_host:
 # openobserve_server_crt_filepath: /etc/ssl/certs/OOSERVER.crt
 openobserve_agent_filelog_include: [ /var/log/**log ]
+openobserve_agent_debug_enable: false
+openobserve_agent_sampling_enable: false
+# additional configuration (yaml input)
+openobserve_agent_journald_extras:
+openobserve_agent_config_receivers:
+openobserve_agent_config_processors:
+openobserve_agent_config_exporters:
+openobserve_agent_config_service_pipelines:
 
 openobserve_repo: openobserve/openobserve
 openobserve_release: latest
