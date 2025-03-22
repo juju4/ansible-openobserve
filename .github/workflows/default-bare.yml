@@ -34,6 +34,10 @@ jobs:
             experimental: false
           - distribution: ubuntu
             version: '24.04'
+            suite: default-full-python
+            experimental: false
+          - distribution: ubuntu
+            version: '24.04'
             suite: default-source
             experimental: false
           - distribution: ubuntu
