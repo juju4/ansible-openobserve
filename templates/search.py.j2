@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+{{ ansible_managed | comment }}
+# Test script to validate have logs and API functional
+
+from datetime import datetime, timedelta
+from random import random
+from pprint import pprint
+
+import requests
+import base64
+import os
+
+from python_openobserve.openobserve import OpenObserve
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Use .env file
+# oo_host = "https://localhost:5080"
+# oo_user = "root@example.com"
+# oo_pass = ""
+
+start_timeperiod = datetime.now() - timedelta(days=1)
+end_timeperiod = datetime.now()
+
+OO = OpenObserve(host=oo_host, user=oo_user, password=oo_pass)
+
+sql = 'select os_type,log_file_name,count(*) from "default" group by os_type,log_file_name order by count(*) desc'
+results = OO.search(
+    sql, start_time=start_timeperiod, end_time=end_timeperiod, verbosity=3
+)
+print(f"got {len(results)} results")
+pprint(results)
+
+sql = 'SELECT body__hostname,count(*) FROM "journald" group by body__hostname'
+results = OO.search(
+    sql, start_time=start_timeperiod, end_time=end_timeperiod, verbosity=1
+)
+print(f"got {len(results)} results")
+pprint(results)
+
+sql = 'SELECT body__hostname,body__comm,count(*) FROM "journald" group by body__hostname,body__comm order by count(*) desc'
+results = OO.search(
+    sql, start_time=start_timeperiod, end_time=end_timeperiod, verbosity=1
+)
+print(f"got {len(results)} results")
+pprint(results)

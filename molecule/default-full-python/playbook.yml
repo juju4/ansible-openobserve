@@ -1,0 +1,6 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - geerlingguy.filebeat
+    - juju4.openobserve

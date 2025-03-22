@@ -1,0 +1,10 @@
+---
+
+collections:
+  - name: community.general
+
+roles:
+  - name: geerlingguy.filebeat
+  - src: https://github.com/juju4/ansible-harden-nginx/
+    version: main
+    name: juju4.harden_nginx
