@@ -36,6 +36,11 @@
   when:
     - not is_container | bool
 
+- name: Import backup-config
+  ansible.builtin.import_tasks: backup-config.yml
+  when:
+    - openobserve_backup_config_enable | bool
+
 - name: Import sample tasks
   ansible.builtin.import_tasks: sample.yml
   when:

@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""
+{{ ansible_managed }}
+
+OpenObserve settings backup script to json+git repo
+$ pip install python-openobserve pandas python-dotenv GitPython
+"""
+
+from pprint import pprint
+import os
+import sys
+import locale
+
+from git.repo import Repo
+from dotenv import load_dotenv
+from python_openobserve.openobserve import OpenObserve
+
+# FIXME! gitpython UnicodeDecodeError?
+# locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+# locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
+pprint(locale.getlocale())
+
+load_dotenv()
+
+# Use .env file
+# oo_host = "https://localhost:5080"
+# oo_user = "root@example.com"
+# oo_pass = ""
+GIT_COMMIT_ENABLE = {{ openobserve_backup_config_git_enable | capitalize }}
+
+OO = OpenObserve(
+    host=os.environ.get("OO_HOST"),
+    user=os.environ.get("OO_USER"),
+    password=os.environ.get("OO_PASS"),
+)
+
+OO.config_export("", verbosity=1, split=True)
+
+# Commit
+if GIT_COMMIT_ENABLE is not True:
+    sys.exit(0)
+repo = Repo("{{ openobserve_backup_config_root }}")
+changed = [item.a_path for item in repo.index.diff(None)]
+untracked = repo.untracked_files
+if not changed and not untracked:
+    pprint("no change to commit")
+    sys.exit(0)
+files_list = [k for k in changed + untracked if k.endswith(".json")]
+pprint(files_list)
+git_cmd = repo.git
+for f in files_list:
+    # try:
+    #     repo.index.add(f)
+    # except UnicodeDecodeError as err:
+    #     # UnicodeDecodeError: 'utf-8' codec can't decode byte 0xf7 in
+    #     # position 1: invalid start byte
+    #     pprint(f"UnicodeDecodeError on file {f}: {err}")
+    # except Exception as err:
+    #     pprint(f"Exception on file {f}: {err}")
+    git_cmd.add(f)
+# repo.index.commit('feat: backup commit from python')
+# origin = repo.remotes[0]
+# origin.push()
+git_cmd.commit(message="feat: backup commit from python")
+git_cmd.push()

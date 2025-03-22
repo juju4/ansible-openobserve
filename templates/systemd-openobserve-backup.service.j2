@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=OpenObserve backup
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart={{ openobserve_backup_config_venv }}/bin/python {{ openobserve_backup_config_root }}/backup.py
+WorkingDirectory={{ openobserve_backup_config_root }}
+
+[Install]
+WantedBy=default.target

@@ -30,6 +30,8 @@ openobserve_home: /var/_openobserve
 openobserve_rootdir: /var/_openobserve/openobserve
 
 openobserve_web_url: "https://{{ ansible_fqdn }}"
+# if using reverse-proxy with self-signed or internal CA (backup config)
+openobserve_ca_bundle_filepath:
 # Note: localhost and ::1 don't seem accepted
 openobserve_listen_host: 127.0.0.1
 openobserve_listen_port: 5080
@@ -70,6 +72,20 @@ openobserve_logrotate_compress: true
 openobserve_logrotate_delaycompress: true
 openobserve_logrotate_datext: true
 openobserve_logrotate_datformat: '-%Y%m%d'
+
+openobserve_backup_config_enable: false
+openobserve_backup_config_git_enable: false
+openobserve_backup_config_user: _o2_backup
+openobserve_backup_config_home: /var/_openobserve_backup
+openobserve_backup_config_root: /var/_openobserve_backup/o2
+openobserve_backup_user_email: root@example.com
+openobserve_backup_user_pass: root@example.com
+openobserve_backup_config_venv: /var/_openobserve_backup/venv
+openobserve_pip_pkgs:
+  - git+https://github.com/juju4/python-openobserve@devel-all
+  - pandas
+  - python-dotenv
+  - Gitpython
 
 is_container: false
 
