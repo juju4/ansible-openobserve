@@ -50,11 +50,11 @@
     creates: /usr/local/bin/otelcol-contrib
 
 - name: Retrieve auth key
-  when:
-    - openobserve_agent_auth_key_retrieve | bool
-    - openobserve_agent_auth_key is not defined
-    - openobserve_agent_auth_key == None
-    - not openobserve_agent_auth_key | string
+  when: >
+    openobserve_agent_auth_key_retrieve | bool or
+    openobserve_agent_auth_key is not defined or
+    openobserve_agent_auth_key == None or
+    not openobserve_agent_auth_key | string
   block:
     - name: Ensure jk is present
       ansible.builtin.package:
