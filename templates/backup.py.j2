@@ -11,7 +11,12 @@ import os
 import sys
 import locale
 
-from git.repo import Repo
+try:
+    from git.repo import Repo
+
+    HAVE_MODULE_GIT = True
+except ImportError:
+    HAVE_MODULE_GIT = False
 from dotenv import load_dotenv
 from python_openobserve.openobserve import OpenObserve
 
@@ -39,6 +44,9 @@ OO.config_export("", verbosity=1, split=True)
 # Commit
 if GIT_COMMIT_ENABLE is not True:
     sys.exit(0)
+if not HAVE_MODULE_GIT:
+    print("Fatal! missing Gitpython.")
+    sys.exit(1)
 repo = Repo("{{ openobserve_backup_config_root }}")
 changed = [item.a_path for item in repo.index.diff(None)]
 untracked = repo.untracked_files
