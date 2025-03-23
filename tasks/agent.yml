@@ -56,6 +56,11 @@
     - openobserve_agent_auth_key == None
     - not openobserve_agent_auth_key | string
   block:
+    - name: Ensure jk is present
+      ansible.builtin.package:
+        name: jq
+        state: present
+      delegate_to: "{{ openobserve_server_ansible_host }}"
     - name: Retrieve server access key
       ansible.builtin.shell:  # noqa no-changed-when
         cmd: |
