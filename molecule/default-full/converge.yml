@@ -68,12 +68,10 @@
         (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
   roles:
     - geerlingguy.filebeat
+    - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
     - { role: juju4.openobserve,
         openobserve_deploy_type: 'agent',
         openobserve_server_ansible_host: localhost,
         openobserve_agent_server_url: "https://localhost/api/default/",
-        # how to retrieve automatically or only Web UI?
-        openobserve_agent_auth_key: xyz
     }
-    - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
     - juju4.harden_nginx
