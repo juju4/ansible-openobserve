@@ -14,6 +14,8 @@
       - https://github.com/openobserve/dashboards/raw/refs/heads/main/Usage/Usage%20_%20Overall.dashboard.json
       - https://github.com/openobserve/dashboards/raw/refs/heads/main/Usage/Usage%20_%20Org.dashboard.json
     openobserve_backup_config_enable: true
+    ssl_dir: /etc/ssl/certs
+    site_serve_name: "{{ ansible_fqdn }}"
     openobserve_ca_bundle_filepath: "{{ hardenwebserver_ssl_cert | default(ssl_dir + '/' + site_server_name + '.crt') }}"
     # https://openobserve.ai/docs/ingestion/logs/filebeat/
     filebeat_version: 8.x
