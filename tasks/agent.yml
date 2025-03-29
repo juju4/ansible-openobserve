@@ -47,12 +47,13 @@
     mode: '0755'
     owner: root
     remote_src: true
-    creates: /usr/local/bin/otelcol-contrib
+    # does not work with update
+    # creates: /usr/local/bin/otelcol-contrib
 
 - name: Retrieve auth key
   when: >
-    openobserve_agent_auth_key_retrieve | bool or
-    openobserve_agent_auth_key is not defined or
+    - openobserve_agent_auth_key_retrieve | bool
+    - openobserve_agent_auth_key is not defined or
     openobserve_agent_auth_key == None or
     not openobserve_agent_auth_key | string
   block:
@@ -70,9 +71,12 @@
         executable: /bin/bash
       delegate_to: "{{ openobserve_server_ansible_host }}"
       register: agent_auth_key
+      changed_when: false
+      no_log: "{{ openobserve_no_log | default(true) }}"
     - name: Set fact auth key
       ansible.builtin.set_fact:
         openobserve_agent_auth_key: "{{ agent_auth_key.stdout }}"
+      no_log: "{{ openobserve_no_log | default(true) }}"
 
 - name: Configure Otel collector
   ansible.builtin.template:
@@ -129,3 +133,24 @@
     name: otel-collector
     state: started
     enabled: true
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Pause for 15 seconds for service to start
+  ansible.builtin.pause:
+    seconds: 15
+
+- name: Ensure Otel collector service has no errors
+  ansible.builtin.command:
+    # cmd: journalctl -u otel-collector -l --no-pager --since "1 hour ago"
+    cmd: journalctl -u otel-collector -l --no-pager --since "10 minutes ago"
+  become: yes
+  register: otel_journal
+  changed_when: false
+
+- name: Validate Otel journal
+  ansible.builtin.assert:
+    that:
+      - "'Unauthenticated' not in otel_journal.stdout"
+      - "'Permission denied' not in otel_journal.stdout"
