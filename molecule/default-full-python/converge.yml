@@ -73,13 +73,15 @@
   roles:
     - geerlingguy.filebeat
     - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
+    # need certificate to exist before creating openobserve-backup.service
+    # else service fails to start
+    - juju4.harden_nginx
     - { role: juju4.openobserve,
         openobserve_deploy_type: 'agent',
         openobserve_server_ansible_host: localhost,
         openobserve_agent_server_url: "https://localhost/api/default/",
         openobserve_agent_auth_key_retrieve: true
     }
-    - juju4.harden_nginx
   tasks:
     - name: Install python-openobserve
       ansible.builtin.pip:
