@@ -113,6 +113,7 @@ jobs:
       - name: After script - systemd
         run: |
           systemctl -l --no-pager status openobserve || true
+          systemctl -l --no-pager status openobserve-backup || true
           systemd-analyze --no-pager security || true
           systemd-analyze --no-pager security openobserve || true
           systemd-analyze --no-pager verify openobserve || true
@@ -138,6 +139,12 @@ jobs:
             sudo /var/_openobserve/.cargo/bin/openobserve -V || true
             sudo ls -la /var/_openobserve/build || true
           fi
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - nginx ssl
+        run: |
+          set -x
+          ls -la /etc/ssl/certs/
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - dashboards
