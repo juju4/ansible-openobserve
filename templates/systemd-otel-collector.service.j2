@@ -59,7 +59,7 @@ RestrictAddressFamilies=AF_INET AF_INET6
 RestrictAddressFamilies=~AF_UNIX
 
 IPAccounting=yes
-{% if openobserve_webproxy_ip|string %}
+{% if openobserve_webproxy_ip | string %}
 # upstream communication can be limited to proxy
 # but must be able to receive logs too...
 # IPAddressAllow={{ openobserve_webproxy_ip }}
@@ -84,7 +84,8 @@ CapabilityBoundingSet=~CAP_SYS_TTY_CONFIG
 CapabilityBoundingSet=~CAP_SYS_ADMIN
 CapabilityBoundingSet=~CAP_SETUID CAP_SETGID
 CapabilityBoundingSet=~CAP_SETPCAP
-CapabilityBoundingSet=~CAP_CHOWN
+# warn        batchprocessor@v0.111.0/batch_processor.go:279        Sender failed        {"kind": "processor", "name": "batch", "pipeline": "logs/test", "error": "chown /tmp/otel-debug.log: operation not permitted"}
+# CapabilityBoundingSet=~CAP_CHOWN
 CapabilityBoundingSet=~CAP_FSETID CAP_SETFCAP
 CapabilityBoundingSet=~CAP_NET_RAW
 CapabilityBoundingSet=~CAP_IPC_LOCK
@@ -101,7 +102,7 @@ SystemCallErrorNumber=EPERM
 {% endif %}
 SystemCallArchitectures=native
 
-{% if openobserve_cgroups_restriction_enable|bool %}
+{% if openobserve_cgroups_restriction_enable | bool %}
 CPUWeight={{ openobserve_cgroups_cpushares | default('1024') }}
 CPUQuota={{ openobserve_cgroups_cpuquota | default('80%') }}
 MemoryMax={{ openobserve_cgroups_memorylimit | default('4G') }}

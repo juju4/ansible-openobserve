@@ -80,7 +80,9 @@ exporters:
 {% endif %}
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/fileexporter/README.md
   file/debug:
-    path: /tmp/otel-debug.log
+    # if systemd PrivateTmp, check /tmp/systemd-private-*-otel-collector.service-*/tmp/otel-debug.log
+    # path: /tmp/otel-debug.log
+    path: {{ openobserve_home }}/otel-debug.log
     rotation:
       max_megabytes: 10
       max_days: 3
