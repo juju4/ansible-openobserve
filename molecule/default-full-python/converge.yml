@@ -72,10 +72,10 @@
         (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
   roles:
     - geerlingguy.filebeat
-    - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
     # need certificate to exist before creating openobserve-backup.service
     # else service fails to start
     - juju4.harden_nginx
+    - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
     - { role: juju4.openobserve,
         openobserve_deploy_type: 'agent',
         openobserve_server_ansible_host: localhost,
