@@ -116,10 +116,13 @@ jobs:
           systemctl -l --no-pager status openobserve-backup || true
           systemd-analyze --no-pager security || true
           systemd-analyze --no-pager security openobserve || true
+          systemd-analyze --no-pager security openobserve-backup || true
           systemd-analyze --no-pager verify openobserve || true
           cat /etc/systemd/system/openobserve.service || true
+          cat /etc/systemd/system/openobserve-backup.service || true
           systemctl -l --no-pager status otel-collector || true
           systemctl -l --no-pager status filebeat || true
+          systemctl -l --no-pager status nginx || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - journalctl
@@ -147,13 +150,20 @@ jobs:
           ls -la /etc/ssl/certs/
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - backup service
+        run: |
+          set -x
+          sudo ls -la /var/_openobserve_backup/o2
+          sudo cat /var/_openobserve_backup/o2/.env
+        if: ${{ always() }}
+        continue-on-error: true
       - name: After script - dashboards
         run: |
           set -x
           sudo bash -c 'for f in /var/_install/*.json; do python3 -mjson.tool $f; done'
         if: ${{ always() }}
         continue-on-error: true
-      - name: After script - curl
+      - name: After script - curl 5080
         run: |
           set -x
           export curl_args="-v --no-progress-meter -u root@example.com:root@example.com"
@@ -168,6 +178,15 @@ jobs:
           curl ${curl_args} http://127.0.0.1:5080/web/
           curl ${curl_args} http://127.0.0.1:5080/api/default/_search --data '{"query":{"sql":"SELECT * FROM \"default\"","start_time":1674789786006000,"end_time":1767247261000000,"from":0,"size":10}}' || true
           curl ${curl_args} http://127.0.0.1:5080/api/default/_search --data '{"query":{"sql":"SELECT * FROM \"journald\"","start_time":1674789786006000,"end_time":1767247261000000,"from":0,"size":10}}' || true
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - curl 443
+        run: |
+          set -x
+          export curl_args="-v --no-progress-meter -u root@example.com:root@example.com"
+          curl ${curl_args} https://127.0.0.1/healthz
+          curl ${curl_args} https://127.0.0.1/api/default/users
+          curl ${curl_args} https://127.0.0.1
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - logs
