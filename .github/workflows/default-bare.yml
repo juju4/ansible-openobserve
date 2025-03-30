@@ -155,6 +155,7 @@ jobs:
           set -x
           sudo ls -la /var/_openobserve_backup/o2
           sudo cat /var/_openobserve_backup/o2/.env
+          sudo find /var/_openobserve_backup/o2/ -type f -iname '*.json' -exec cat {} \;
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - dashboards
