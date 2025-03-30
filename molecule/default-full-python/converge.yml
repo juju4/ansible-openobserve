@@ -17,6 +17,8 @@
     ssl_dir: /etc/ssl/certs
     site_server_name: "{{ ansible_fqdn }}"
     openobserve_ca_bundle_filepath: "{{ hardenwebserver_ssl_cert | default(ssl_dir + '/' + site_server_name + '.crt') }}"
+    # mkcert san
+    alternate_dns: 'localhost 127.0.0.1 ::1'
     openobserve_backup_config_tls_validate: false
     # https://openobserve.ai/docs/ingestion/logs/filebeat/
     filebeat_version: 8.x
