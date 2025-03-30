@@ -58,7 +58,7 @@
 - name: Create .env file
   ansible.builtin.copy:
     content: |
-      OO_HOST={{ openobserve_web_url }}
+      OO_HOST={{ openobserve_backup_web_url | default(openobserve_web_url) }}
       OO_USER={{ openobserve_backup_user_email }}
       OO_PASS={{ openobserve_backup_user_pass }}
       {% if openobserve_ca_bundle_filepath != None and openobserve_ca_bundle_filepath | length > 0 %}
