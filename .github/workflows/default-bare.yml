@@ -46,6 +46,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: ${{ env.ANSIBLE_ROLE }}
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            /var/cache/apt/archives
+            /var/lib/apt
+            /var/_install
+          key: cache-o2-${{ steps.get-date.outputs.date }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
