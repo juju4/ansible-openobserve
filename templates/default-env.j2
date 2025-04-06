@@ -10,7 +10,7 @@ ZO_TELEMETRY={{ openobserve_telemetry | bool | lower }}
 ZO_USAGE_REPORTING_ENABLED={{ openobserve_usage_reporting | bool | lower }}
 ZO_INGEST_FLATTEN_LEVEL={{ openobserve_ingest_json_flatten_level | int }}
 # RUST_BACKTRACE=full
-ZO_WEB_URL="https://{{ openobserve_web_url | default(ansible_fqdn) }}"
+ZO_WEB_URL="{{ openobserve_web_url }}"
 
 # SMTP
 ZO_SMTP_ENABLED={{ openobserve_smtp_enabled }}
