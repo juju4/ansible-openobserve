@@ -8,3 +8,6 @@ roles:
   - src: https://github.com/juju4/ansible-harden-nginx/
     version: main
     name: juju4.harden_nginx
+  - src: https://github.com/juju4/ansible-otelcol/
+    version: main
+    name: juju4.otelcol

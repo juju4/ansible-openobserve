@@ -69,9 +69,9 @@
   roles:
     - geerlingguy.filebeat
     - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
-    - { role: juju4.openobserve,
-        openobserve_deploy_type: 'agent',
+    - { role: juju4.otelcol,
         openobserve_server_ansible_host: localhost,
-        openobserve_agent_server_url: "https://localhost/api/default/",
+        otelcol_server_url: "https://localhost/api/default/",
+        otelcol_auth_key_retrieve: true
     }
     - juju4.harden_nginx
