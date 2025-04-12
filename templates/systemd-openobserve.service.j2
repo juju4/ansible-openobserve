@@ -9,11 +9,14 @@ Requires=network.target
 
 [Service]
 Type=simple
+LimitNOFILE=65535
 {% if openobserve_build_enable | bool %}
 ExecStart=/bin/bash -c "{{ openobserve_home }}/.cargo/bin/openobserve"
 {% else %}
 ExecStart=/bin/bash -c "{{ openobserve_rootdir }}/openobserve"
 {% endif %}
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
 EnvironmentFile=/etc/default/openobserve
 {% if openobserve_webproxy_enable | bool %}
 EnvironmentFile=/etc/environment
@@ -31,7 +34,7 @@ PrivateTmp=true
 ProtectHome=yes
 ProtectSystem=yes
 # ProtectSystem=strict
-{% if ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 21 %}
+{% if ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int >= 21 %}
 # ProtectProc=noaccess
 {% endif %}
 
@@ -66,7 +69,7 @@ MemoryDenyWriteExecute=yes
 # RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
 
 IPAccounting=yes
-{% if openobserve_webproxy_ip|string %}
+{% if openobserve_webproxy_ip | string %}
 # upstream communication can be limited to proxy
 # but must be able to receive logs too...
 # IPAddressAllow={{ openobserve_webproxy_ip }}
@@ -100,9 +103,7 @@ CapabilityBoundingSet=~CAP_IPC_LOCK
           ansible_virtualization_type == "docker"
         )
 %}
-{% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int > 18) %}
 SystemCallFilter=@system-service
-{% endif %}
 SystemCallFilter=~@debug @mount @cpu-emulation @obsolete @privileged @resources @reboot @swap @raw-io @module
 # SystemCallFilter=~@debug @mount @cpu-emulation @obsolete @resources @reboot @swap @raw-io @module
 # When system call is disallowed, return error code instead of killing process
@@ -110,7 +111,7 @@ SystemCallErrorNumber=EPERM
 {% endif %}
 SystemCallArchitectures=native
 
-{% if openobserve_cgroups_restriction_enable|bool %}
+{% if openobserve_cgroups_restriction_enable | bool %}
 CPUWeight={{ openobserve_cgroups_cpushares | default('1024') }}
 CPUQuota={{ openobserve_cgroups_cpuquota | default('80%') }}
 MemoryMax={{ openobserve_cgroups_memorylimit | default('4G') }}
