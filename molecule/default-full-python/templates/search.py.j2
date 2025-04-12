@@ -20,6 +20,9 @@ load_dotenv()
 # oo_host = "https://localhost:5080"
 # oo_user = "root@example.com"
 # oo_pass = ""
+oo_host = os.environ['OO_HOST']
+oo_user = os.environ['OO_USER']
+oo_pass = os.environ['OO_PASS']
 
 start_timeperiod = datetime.now() - timedelta(days=1)
 end_timeperiod = datetime.now()
