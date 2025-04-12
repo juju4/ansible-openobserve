@@ -92,6 +92,10 @@
       ansible.builtin.pip:
         name: git+https://github.com/juju4/python-openobserve@devel-all
         virtualenv: /root/venv
+    - name: Install pandas
+      ansible.builtin.pip:
+        name: pandas
+        virtualenv: /root/venv
     - name: Create .env file
       ansible.builtin.copy:
         content: |
