@@ -58,10 +58,3 @@
 
 - name: Import server
   ansible.builtin.import_tasks: server.yml
-  when:
-    - openobserve_deploy_type == 'server'
-
-- name: Import agent
-  ansible.builtin.import_tasks: agent.yml
-  when:
-    - openobserve_deploy_type == 'agent'
