@@ -59,6 +59,8 @@ https://github.com/openobserve/openobserve/issues/3910
 
 * It does not seem possible to switch an instance with extra cpu instructions to one without (for example, VM/container cluster with different CPU). May cause error like "Error: Migration file of version 'm20241204_143100_create_table_search_queue' is missing, this migration has been applied but its file is missing"
 
+* SSO is only available for enterprise version in self-host mode, which can only be install through helm chart or terraform/aws as per https://openobserve.ai/docs/openobserve-enterprise-edition-installation-guide/. It is free for up to 200 GB of ingestion per day. See also https://openobserve.ai/blog/sso-tax/
+
 ## License
 
 BSD 2-clause
