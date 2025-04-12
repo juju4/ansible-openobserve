@@ -54,6 +54,8 @@
       # - { p: "/etc/letsencrypt/live/{{ ansible_fqdn }}/privkey.pem", perm: r }
       - { p: "/etc/ssl/private/{{ ansible_fqdn }}.key", perm: r }
       - { p: "/etc/ssl/private/dhparam4.pem", perm: r }
+    # openobserve key retrieval not working
+    otelcol_errors_validation: false
   pre_tasks:
     - name: Ubuntu | Install python3
       ansible.builtin.raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
