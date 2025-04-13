@@ -157,6 +157,7 @@ jobs:
           sudo cat /root/.env
           sudo cat /root/search.py
         if: ${{ always() }}
+        continue-on-error: true
       - name: After script - dashboards
         run: |
           set -x
