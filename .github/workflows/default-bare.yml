@@ -150,6 +150,13 @@ jobs:
           sudo find /var/_openobserve_backup/o2/ -type f -iname '*.json' -exec cat {} \;
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - search.py
+        run: |
+          set -x
+          sudo ls -la /root/
+          sudo cat /root/.env
+          sudo cat /root/search.py
+        if: ${{ always() }}
       - name: After script - dashboards
         run: |
           set -x
