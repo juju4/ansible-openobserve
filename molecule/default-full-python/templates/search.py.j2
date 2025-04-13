@@ -34,7 +34,7 @@ OO = OpenObserve(
     verify={{ openobserve_backup_config_tls_validate | default(True) | capitalize }}
  )
 
-sql = 'select os_type,log_file_name,count(*) from "default" group by os_type,log_file_name order by count(*) desc'
+sql = 'select * from "default" limit 10'
 results = OO.search(
     sql, start_time=start_timeperiod, end_time=end_timeperiod, verbosity=3
 )
