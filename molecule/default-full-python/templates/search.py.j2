@@ -27,7 +27,12 @@ oo_pass = os.environ['OO_PASS']
 start_timeperiod = datetime.now() - timedelta(days=1)
 end_timeperiod = datetime.now()
 
-OO = OpenObserve(host=oo_host, user=oo_user, password=oo_pass)
+OO = OpenObserve(
+    host=oo_host,
+    user=oo_user,
+    password=oo_pass,
+    verify={{ openobserve_backup_config_tls_validate | default(True) | capitalize }}
+ )
 
 sql = 'select os_type,log_file_name,count(*) from "default" group by os_type,log_file_name order by count(*) desc'
 results = OO.search(
