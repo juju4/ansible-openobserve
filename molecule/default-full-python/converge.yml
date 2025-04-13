@@ -21,6 +21,9 @@
     alternate_dns: 'localhost 127.0.0.1 ::1'
     openobserve_backup_web_url: https://localhost
     openobserve_backup_config_tls_validate: false
+    # search.py: why openobserve_web_url defaults ok but not those two?
+    openobserve_root_user_email: root@example.com
+    openobserve_root_user_pass: root@example.com
     # https://openobserve.ai/docs/ingestion/logs/filebeat/
     filebeat_version: 8.x
     filebeat_output_elasticsearch_enabled: true
