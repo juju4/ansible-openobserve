@@ -19,3 +19,5 @@
     url: "{{ gh_dl_url }}"
     dest: "{{ install_archives }}/{{ gh_dl_url | basename }}"
     mode: '0600'
+  register: dl
+  until: dl is success
