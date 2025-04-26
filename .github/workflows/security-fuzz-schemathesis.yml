@@ -57,7 +57,7 @@ jobs:
         run: |
           schemathesis run http://localhost:5080/api-doc/openapi.json \
             --base-url=http://localhost:5080 \
-            --header "Authorization=Basic $BASIC_AUTH" \
+            --header "Authorization: Basic $BASIC_AUTH" \
             --set-path org_id=default
 
       - name: Upload Schemathesis results
