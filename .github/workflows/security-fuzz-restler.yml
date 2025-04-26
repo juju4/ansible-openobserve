@@ -65,6 +65,7 @@ jobs:
 
       - name: Clone RESTler
         run: |
+          export PATH=$PATH:$HOME/.dotnet
           git clone https://github.com/microsoft/restler-fuzzer.git
           cd restler-fuzzer
           python build-restler.py --dest_dir ./restler_bin
@@ -76,11 +77,13 @@ jobs:
 
       - name: Run RESTler compile step
         run: |
+          export PATH=$PATH:$HOME/.dotnet
           cd restler-fuzzer/restler_bin
           ./restler compile --api_spec ../tests/openapi.json --custom_dict ../../custom/custom.dict
 
       - name: Run RESTler fuzzing step
         run: |
+          export PATH=$PATH:$HOME/.dotnet
           cd restler-fuzzer/restler_bin
           ./restler fuzz-lean
 
