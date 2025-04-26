@@ -1,0 +1,33 @@
+{
+        "id": "2u5huhHK59KnKur8ih1QuiUmABC",
+        "name": "test_alert",
+        "org_id": "default",
+        "stream_type": "logs",
+        "stream_name": "default",
+        "is_real_time": false,
+        "query_condition": {
+            "type": "sql",
+            "conditions": [],
+            "sql": "select count(*) from \"default\"",
+            "multi_time_range": []
+        },
+        "trigger_condition": {
+            "period": 60,
+            "operator": "<=",
+            "threshold": 1,
+            "frequency": 60,
+            "cron": "",
+            "frequency_type": "minutes",
+            "silence": 60,
+            "timezone": "UTC"
+        },
+        "destinations": ["alert-destination-email"],
+        "context_attributes": {},
+        "row_template": "",
+        "description": "Description test alert",
+        "enabled": false,
+        "tz_offset": 0,
+        "owner": "root@example.com",
+        "updated_at": "2025-01-02T12:34:56Z",
+        "last_edited_by": "root@example.com"
+    }

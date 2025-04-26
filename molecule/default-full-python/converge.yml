@@ -91,9 +91,14 @@
         otelcol_auth_key_retrieve: true
     }
   tasks:
+    - name: Git clone python-openobserve
+      ansible.builtin.git:
+        repo: git+https://github.com/juju4/python-openobserve
+        dest: /root/python-openobserve
+        version: 181ef789ca248f2274cd89e44e6a3b12624f8955
     - name: Install python-openobserve
       ansible.builtin.pip:
-        name: git+https://github.com/juju4/python-openobserve@devel-all
+        name: file:///root/python-openobserve
         virtualenv: /root/venv
     - name: Install pip dependencies
       ansible.builtin.pip:
@@ -102,6 +107,7 @@
       loop:
         - pandas
         - python-dotenv
+        - pytest
     - name: Create .env file
       ansible.builtin.copy:
         content: |
@@ -125,6 +131,18 @@
         cmd: /root/venv/bin/python search.py
       args:
         chdir: /root
+    - name: Run pytest offline
+      ansible.builtin.command:  # noqa no-changed-when
+        cmd: /root/venv/bin/pytest test_openobserve_api_offline.py
+      args:
+        chdir: /root/python-openobserve/tests
+      failed_when: false
+    - name: Run pytest online
+      ansible.builtin.command:  # noqa no-changed-when
+        cmd: /root/venv/bin/pytest test_openobserve_api.py
+      args:
+        chdir: /root/python-openobserve/tests
+      failed_when: false
     - name: Run config backup
       ansible.builtin.command:  # noqa no-changed-when
         cmd: /var/_openobserve_backup/venv/bin/python backup.py

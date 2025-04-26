@@ -148,6 +148,9 @@ jobs:
           sudo ls -la /var/_openobserve_backup/o2
           sudo cat /var/_openobserve_backup/o2/.env
           sudo find /var/_openobserve_backup/o2/ -type f -iname '*.json' -exec cat {} \;
+          sudo -u _o2_backup ls /var/_openobserve_backup/venv
+          sudo -u _o2_backup /var/_openobserve_backup/venv/bin/pip freeze
+          sudo -u _o2_backup /var/_openobserve_backup/venv/bin/pip show python_openobserve
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - search.py
@@ -179,6 +182,8 @@ jobs:
           curl ${curl_args} http://127.0.0.1:5080/web/
           curl ${curl_args} http://127.0.0.1:5080/api/default/_search --data '{"query":{"sql":"SELECT * FROM \"default\"","start_time":1674789786006000,"end_time":1767247261000000,"from":0,"size":10}}' || true
           curl ${curl_args} http://127.0.0.1:5080/api/default/_search --data '{"query":{"sql":"SELECT * FROM \"journald\"","start_time":1674789786006000,"end_time":1767247261000000,"from":0,"size":10}}' || true
+          cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE
+          curl ${curl_args} http://127.0.0.1:5080/api/default/alerts -d @tests/alert.json
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - curl 443
