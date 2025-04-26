@@ -147,6 +147,7 @@ jobs:
           set -x
           sudo ls -la /var/_openobserve_backup/o2
           sudo cat /var/_openobserve_backup/o2/.env
+          sudo find /var/_openobserve_backup/o2/ -type f -iname '*.json' -ls
           sudo find /var/_openobserve_backup/o2/ -type f -iname '*.json' -exec cat {} \;
           sudo -u _o2_backup ls /var/_openobserve_backup/venv
           sudo -u _o2_backup /var/_openobserve_backup/venv/bin/pip freeze
