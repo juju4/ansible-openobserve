@@ -67,6 +67,8 @@ jobs:
       - name: Clone RESTler
         run: |
           export PATH=$PATH:$HOME/.dotnet
+          echo $PATH
+          dotnet --version
           git clone https://github.com/microsoft/restler-fuzzer.git
           cd restler-fuzzer
           python build-restler.py --dest_dir ./restler_bin
