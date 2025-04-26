@@ -1,0 +1,61 @@
+---
+name: API Fuzzing with Schemathesis
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  schemathesis-test:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+
+    env:
+      # Matching role defaults
+      BASIC_AUTH: cm9vdEBleGFtcGxlLmNvbTpyb290QGV4YW1wbGUuY29t
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install ansible-lint flake8 yamllint jmespath
+          which ansible
+          pip3 install ansible
+          pip3 show ansible
+          ls -l $HOME/.local/bin || true
+          ansible --version
+          cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE
+          [ -f molecule/$ANSIBLE_SUITE/requirements.yml ] && ansible-galaxy install -r molecule/$ANSIBLE_SUITE/requirements.yml
+          { echo '[defaults]'; echo 'callback_enabled = profile_tasks, timer'; echo 'roles_path = ../:/home/runner/.ansible/roles'; echo 'ansible_python_interpreter: /usr/bin/python3'; } >> ansible.cfg
+      - name: Install OpenObserve
+        run: |
+          cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+
+      - name: Install Schemathesis
+        run: pip install schemathesis
+
+      - name: Run Schemathesis tests
+        run: |
+          schemathesis run http://localhost:5080/openapi.json \
+            --base-url=http://localhost:5080
+            --header "Authorization=Basic $BASIC_AUTH"
+
+      - name: Upload Schemathesis results
+        uses: actions/upload-artifact@v4
+        with:
+          name: schemathesis-results
+          path: .
+        if: failure()

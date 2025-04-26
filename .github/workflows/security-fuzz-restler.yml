@@ -1,0 +1,78 @@
+---
+name: API Fuzzing with RESTler
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  fuzz-api:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+
+    env:
+      # Matching role defaults
+      BASIC_AUTH: cm9vdEBleGFtcGxlLmNvbTpyb290QGV4YW1wbGUuY29t
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install ansible-lint flake8 yamllint jmespath
+          which ansible
+          pip3 install ansible
+          pip3 show ansible
+          ls -l $HOME/.local/bin || true
+          ansible --version
+          cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE
+          [ -f molecule/$ANSIBLE_SUITE/requirements.yml ] && ansible-galaxy install -r molecule/$ANSIBLE_SUITE/requirements.yml
+          { echo '[defaults]'; echo 'callback_enabled = profile_tasks, timer'; echo 'roles_path = ../:/home/runner/.ansible/roles'; echo 'ansible_python_interpreter: /usr/bin/python3'; } >> ansible.cfg
+      - name: Install OpenObserve
+        run: |
+          cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+
+      - name: Install RESTler prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dotnet-sdk-8.0
+          pip install setuptools wheel
+
+      - name: Clone RESTler
+        run: |
+          git clone https://github.com/microsoft/restler-fuzzer.git
+          cd restler-fuzzer
+          python build-restler.py --install-dir ./restler_bin
+
+      - name: Create custom.dict with Basic Auth
+        run: |
+          mkdir -p custom
+          echo '{ "Header": { "Authorization": "Basic '"$BASIC_AUTH"'" } }' > custom/custom.dict
+
+      - name: Run RESTler compile step
+        run: |
+          cd restler-fuzzer/restler_bin
+          ./restler compile --api_spec ../tests/openapi.json --custom_dict ../../custom/custom.dict
+
+      - name: Run RESTler fuzzing step
+        run: |
+          cd restler-fuzzer/restler_bin
+          ./restler fuzz-lean
+
+      - name: Upload RESTler results
+        uses: actions/upload-artifact@v4
+        with:
+          name: restler-results
+          path: restler-fuzzer/restler_bin/RestlerResults
