@@ -17,6 +17,7 @@ jobs:
       ANSIBLE_EXTRA_VARS: ""
       ANSIBLE_ROLE: juju4.openobserve
       ANSIBLE_SUITE: default
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
       # Matching role defaults
       BASIC_AUTH: cm9vdEBleGFtcGxlLmNvbTpyb290QGV4YW1wbGUuY29t
 
