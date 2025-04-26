@@ -107,6 +107,7 @@
       loop:
         - pandas
         - python-dotenv
+        - jmespath
         - pytest
     - name: Create .env file
       ansible.builtin.copy:
