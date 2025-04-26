@@ -93,7 +93,7 @@
   tasks:
     - name: Git clone python-openobserve
       ansible.builtin.git:
-        repo: git+https://github.com/juju4/python-openobserve
+        repo: https://github.com/juju4/python-openobserve
         dest: /root/python-openobserve
         version: 181ef789ca248f2274cd89e44e6a3b12624f8955
     - name: Install python-openobserve
