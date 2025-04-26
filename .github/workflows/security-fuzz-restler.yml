@@ -60,7 +60,7 @@ jobs:
         run: |
           git clone https://github.com/microsoft/restler-fuzzer.git
           cd restler-fuzzer
-          python build-restler.py --dest-dir ./restler_bin
+          python build-restler.py --dest_dir ./restler_bin
 
       - name: Create custom.dict with Basic Auth
         run: |
