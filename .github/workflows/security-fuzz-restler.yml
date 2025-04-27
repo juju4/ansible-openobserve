@@ -18,6 +18,7 @@ jobs:
       ANSIBLE_ROLE: juju4.openobserve
       ANSIBLE_SUITE: default
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_ROOT: /home/runner/.dotnet
       # Matching role defaults
       BASIC_AUTH: cm9vdEBleGFtcGxlLmNvbTpyb290QGV4YW1wbGUuY29t
 
@@ -58,6 +59,8 @@ jobs:
           curl -L https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
           chmod +x ./dotnet-install.sh
           ./dotnet-install.sh --channel 8.0
+          ls -la ~/.dotnet/
+          env
 
       - name: Install RESTler prerequisites
         run: |
@@ -67,8 +70,7 @@ jobs:
       - name: Clone RESTler
         run: |
           export PATH=$PATH:$HOME/.dotnet
-          echo $PATH
-          dotnet --version
+          dotnet --version || true
           git clone https://github.com/microsoft/restler-fuzzer.git
           cd restler-fuzzer
           python build-restler.py --dest_dir ./restler_bin
@@ -81,14 +83,14 @@ jobs:
       - name: Run RESTler compile step
         run: |
           export PATH=$PATH:$HOME/.dotnet
-          cd restler-fuzzer/restler_bin
-          ./restler compile --api_spec ../tests/openapi.json --custom_dict ../../custom/custom.dict
+          cd restler-fuzzer/restler_bin/restler
+          ./Restler compile --api_spec ../tests/openapi.json --custom_dict ../../custom/custom.dict
 
       - name: Run RESTler fuzzing step
         run: |
           export PATH=$PATH:$HOME/.dotnet
-          cd restler-fuzzer/restler_bin
-          ./restler fuzz-lean
+          cd restler-fuzzer/restler_bin/restler
+          ./Restler fuzz-lean
 
       - name: Upload RESTler results
         uses: actions/upload-artifact@v4
