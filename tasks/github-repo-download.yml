@@ -14,6 +14,10 @@
   ansible.builtin.set_fact:
     gh_dl_url: "{{ gh_info.json | community.general.json_query(gh_json_query) | first }}"
 
+- name: Debug | target download url
+  ansible.builtin.debug:
+    var: gh_dl_url
+
 - name: Download archive
   ansible.builtin.get_url:
     url: "{{ gh_dl_url }}"
