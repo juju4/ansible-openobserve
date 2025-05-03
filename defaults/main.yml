@@ -2,6 +2,7 @@
 
 openobserve_repo: openobserve/openobserve
 openobserve_release: latest
+openobserve_force_update: false
 
 openobserve_user: _openobserve
 openobserve_home: /var/_openobserve

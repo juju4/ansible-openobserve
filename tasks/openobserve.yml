@@ -23,6 +23,7 @@
     mode: '0755'
     owner: "{{ openobserve_user }}"
     remote_src: true
+    creates: "{% if not openobserve_force_update | bool %}{{ openobserve_rootdir }}/openobserve{% else %}{{ omit }}{% endif %}"
   when:
     - not openobserve_build_enable | bool
 
