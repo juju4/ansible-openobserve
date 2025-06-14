@@ -6,6 +6,8 @@
   ansible.builtin.uri:
     url: "https://api.github.com/repos/{{ gh_repo }}/releases/{{ gh_release | default('latest') }}"
     return_content: true
+  environment:
+    http_proxy: "{{ proxy_url | default(omit) }}"
   register: gh_info
   until: gh_info is success
   changed_when: false
@@ -23,5 +25,7 @@
     url: "{{ gh_dl_url }}"
     dest: "{{ install_archives }}/{{ gh_dl_url | basename }}"
     mode: '0600'
+  environment:
+    http_proxy: "{{ proxy_url | default(omit) }}"
   register: dl
   until: dl is success
