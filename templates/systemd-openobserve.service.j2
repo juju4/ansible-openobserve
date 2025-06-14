@@ -19,7 +19,7 @@ ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 EnvironmentFile=/etc/default/openobserve
 {% if openobserve_webproxy_enable | bool %}
-EnvironmentFile=/etc/environment
+EnvironmentFile={{ openobserve_webproxy_env_file }}
 {% endif %}
 WorkingDirectory={{ openobserve_rootdir }}
 User={{ openobserve_user }}

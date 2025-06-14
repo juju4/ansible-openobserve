@@ -39,6 +39,7 @@ openobserve_cgroups_restriction_enable: true
 # This will load /etc/environment in systemd to get
 # proxy settings
 openobserve_webproxy_enable: false
+openobserve_webproxy_env_file: /etc/environment
 # currently not used as can't restrict incoming traffic
 openobserve_webproxy_ip: ''
 # same but IP or hostname
