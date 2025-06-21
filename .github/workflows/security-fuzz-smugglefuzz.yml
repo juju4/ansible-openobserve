@@ -57,7 +57,7 @@ jobs:
           hash=$(sha256sum smugglefuzz_Linux_x86_64.tar.gz | awk '{ print $1 }')
           grep ${hash} smugglefuzz_*_checksums.txt
           tar xzf smugglefuzz_Linux_x86_64.tar.gz
-          sudo install -m 0755 smufflefuzz /usr/local/bin/
+          sudo install -m 0755 smugglefuzz /usr/local/bin/
 
       - name: Run Smugglefuzz tests
         run: |
