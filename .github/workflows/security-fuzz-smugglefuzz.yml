@@ -31,11 +31,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.24'
-
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
@@ -57,9 +52,11 @@ jobs:
 
       - name: Install Smugglefuzz
         run: |
-          git clone https://github.com/moopinger/smugglefuzz.git -b experimental-h2c
-          cd smugglefuzz
-          go build .
+          curl -OL https://github.com/Moopinger/smugglefuzz/releases/download/v0.2.2/smugglefuzz_Linux_x86_64.tar.gz
+          curl -OL https://github.com/Moopinger/smugglefuzz/releases/download/v0.2.2/smugglefuzz_0.2.2_checksums.txt
+          hash=$(sha256sum smugglefuzz_Linux_x86_64.tar.gz | awk '{ print $1 }')
+          grep ${hash} smugglefuzz_*_checksums.txt
+          tar xzf smugglefuzz_Linux_x86_64.tar.gz
           sudo install -m 0755 smugglefuzz /usr/local/bin/
 
       - name: Run Smugglefuzz tests
