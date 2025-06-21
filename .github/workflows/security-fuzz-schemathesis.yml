@@ -56,7 +56,7 @@ jobs:
       - name: Run Schemathesis tests
         run: |
           schemathesis run http://localhost:5080/api-doc/openapi.json \
-            --base-url=http://localhost:5080 \
+            --url=http://localhost:5080 \
             --header "Authorization: Basic $BASIC_AUTH" \
             --checks all \
             --data-generation-method all \
