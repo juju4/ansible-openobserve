@@ -20,6 +20,12 @@ jobs:
       # Matching role defaults
       BASIC_AUTH: cm9vdEBleGFtcGxlLmNvbTpyb290QGV4YW1wbGUuY29t
 
+    services:
+      swagger-editor:
+        image: swaggerapi/swagger-editor
+        ports:
+          - 80:8080
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,9 +49,11 @@ jobs:
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE
           [ -f molecule/$ANSIBLE_SUITE/requirements.yml ] && ansible-galaxy install -r molecule/$ANSIBLE_SUITE/requirements.yml
           { echo '[defaults]'; echo 'callback_enabled = profile_tasks, timer'; echo 'roles_path = ../:/home/runner/.ansible/roles'; echo 'ansible_python_interpreter: /usr/bin/python3'; } >> ansible.cfg
+
       - name: Install OpenObserve
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}
+          curl -O http://localhost:5080/api-doc/openapi.json
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
@@ -69,3 +77,12 @@ jobs:
           name: schemathesis-results
           path: .
         if: failure()
+
+      - name: Validate OpenAPI definition
+        uses: swaggerexpert/swagger-editor-validate@264fd875d3c6e1bf65da1f0a63e095cbe41ffef3  # tag=v1.5.1
+        with:
+          swagger-editor-url: http://localhost/
+          definition-file: openapi.json
+          default-timeout: 20000
+        if: ${{ always() }}
+        continue-on-error: true
