@@ -53,7 +53,9 @@ jobs:
       - name: Install OpenObserve
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}
+          cd
           curl -O http://localhost:5080/api-doc/openapi.json
+          ls -lA
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
