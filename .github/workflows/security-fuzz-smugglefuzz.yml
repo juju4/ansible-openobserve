@@ -61,4 +61,4 @@ jobs:
 
       - name: Run Smugglefuzz tests
         run: |
-          smugglefuzz scan --confirm http://localhost:5080
+          smugglefuzz scan --confirm -u http://localhost:5080
