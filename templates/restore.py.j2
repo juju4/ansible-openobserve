@@ -18,6 +18,7 @@ OO = OpenObserve(
     host=os.environ.get("OO_HOST"),
     user=os.environ.get("OO_USER"),
     password=os.environ.get("OO_PASS"),
+    verify={{ openobserve_backup_config_tls_validate | default(True) | capitalize }}
 )
 
 OO.config_import("all", "", verbosity=4, split=True, overwrite=True)
