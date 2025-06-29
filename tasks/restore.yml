@@ -9,12 +9,6 @@
   when:
     - not restored.stat.exists
   block:
-    - name: Restore | Get settings repository
-      ansible.builtin.git:
-        repo: "{{ openobserve_restore_repo }}"
-        dest: "{{ openobserve_restore_root }}"
-        version: "{{ openobserve_restore_repo_version }}"
-
     - name: Ensure restore script exists
       ansible.builtin.template:
         src: restore.py.j2
