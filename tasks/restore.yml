@@ -1,0 +1,35 @@
+---
+
+- name: Check if restore file has already been restored
+  ansible.builtin.stat:
+    path: "{{ openobserve_backup_config_home }}/.o2_restore"
+  register: restored
+
+- name: Restore
+  when:
+    - not restored.stat.exists
+  block:
+    - name: Restore | Get settings repository
+      ansible.builtin.git:
+        repo: "{{ openobserve_restore_repo }}"
+        dest: "{{ openobserve_restore_root }}"
+        version: "{{ openobserve_restore_repo_version }}"
+
+    - name: Ensure restore script exists
+      ansible.builtin.template:
+        src: restore.py.j2
+        dest: "{{ openobserve_restore_root }}/restore.py"
+        mode: '0755'
+        owner: "{{ openobserve_backup_config_user }}"
+
+    - name: Restore settings
+      ansible.builtin.command:  # noqa no-changed-when
+        cmd: "{{ openobserve_backup_config_venv }}/bin/python3 {{ openobserve_restore_root }}/restore.py"
+      args:
+        chdir: "{{ openobserve_restore_root }}"
+
+    - name: Add restoration marker
+      ansible.builtin.file:
+        dest: "{{ openobserve_backup_config_home }}/.o2_restore"
+        mode: "0600"
+        state: "touch"

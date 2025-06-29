@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+"""Restore OpenObserve json files settings to server"""
+# pylint: disable=R0801
+
+import os
+
+from dotenv import load_dotenv
+from python_openobserve.openobserve import OpenObserve
+
+load_dotenv()
+
+# Use .env file
+# oo_host = "https://localhost:5080"
+# oo_user = "root@example.com"
+# oo_pass = ""
+
+OO = OpenObserve(
+    host=os.environ.get("OO_HOST"),
+    user=os.environ.get("OO_USER"),
+    password=os.environ.get("OO_PASS"),
+)
+
+OO.config_import("all", "", verbosity=4, split=True, overwrite=True)

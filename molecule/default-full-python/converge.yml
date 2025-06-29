@@ -13,6 +13,7 @@
       - https://github.com/openobserve/dashboards/raw/refs/heads/main/OpenObserve/OpenObserve%20Infrastructure.dashboard.json
       - https://github.com/openobserve/dashboards/raw/refs/heads/main/Usage/Usage%20_%20Overall.dashboard.json
       - https://github.com/openobserve/dashboards/raw/refs/heads/main/Usage/Usage%20_%20Org.dashboard.json
+    openobserve_restore_enable: true
     openobserve_backup_config_enable: true
     ssl_dir: /etc/ssl/certs
     site_server_name: "{{ ansible_fqdn }}"

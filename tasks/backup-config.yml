@@ -1,71 +1,10 @@
 ---
 
-- name: Ensure python dependencies are present
-  ansible.builtin.package:
-    name:
-      - python3
-      - python3-pip
-      - virtualenv
-      - git
-    state: present
-
-- name: Ensure openobserve backup user exists
-  ansible.builtin.user:
-    name: "{{ openobserve_backup_config_user }}"
-    home: "{{ openobserve_backup_config_home }}"
-    system: true
-    create_home: yes
-  become: yes
-  become_user: root
-
-- name: Ensure .ssh dir exists
-  ansible.builtin.file:
-    dest: "{{ openobserve_backup_config_home }}/.ssh"
-    state: directory
-    mode: '0700'
-    owner: "{{ openobserve_backup_config_user }}"
-
-- name: Generate an OpenSSH keypair for backup user
-  community.crypto.openssh_keypair:
-    path: "{{ openobserve_backup_config_home }}/.ssh/id_ed25519"
-    type: ed25519
-    comment: "o2-backup@{{ ansible_fqdn }}-{{ ansible_date_time.date }}"
-    mode: '0600'
-    owner: "{{ openobserve_backup_config_user }}"
-
-# To version config, should add public ssh key to server and put repo here
-- name: Ensure root dir exists
-  ansible.builtin.file:
-    dest: "{{ openobserve_backup_config_root }}"
-    state: directory
-    mode: '0755'
-    owner: "{{ openobserve_backup_config_user }}"
-
 - name: Ensure backup script exists
   ansible.builtin.template:
     src: backup.py.j2
     dest: "{{ openobserve_backup_config_root }}/backup.py"
     mode: '0755'
-    owner: "{{ openobserve_backup_config_user }}"
-
-- name: Install python-openobserve venv
-  ansible.builtin.pip:
-    name: "{{ openobserve_pip_pkgs }}"
-    virtualenv: "{{ openobserve_backup_config_venv }}"
-  become: yes
-  become_user: "{{ openobserve_backup_config_user }}"
-
-- name: Create .env file
-  ansible.builtin.copy:
-    content: |
-      OO_HOST={{ openobserve_backup_web_url | default(openobserve_web_url) }}
-      OO_USER={{ openobserve_backup_user_email }}
-      OO_PASS={{ openobserve_backup_user_pass }}
-      {% if openobserve_ca_bundle_filepath != None and openobserve_ca_bundle_filepath | length > 0 %}
-      REQUESTS_CA_BUNDLE={{ openobserve_ca_bundle_filepath }}
-      {% endif %}
-    dest: "{{ openobserve_backup_config_root }}/.env"
-    mode: '0600'
     owner: "{{ openobserve_backup_config_user }}"
 
 - name: Configure openobserve backup systemd service unit
