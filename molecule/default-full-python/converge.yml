@@ -58,8 +58,7 @@
       # - { p: "/etc/letsencrypt/live/{{ ansible_fqdn }}/privkey.pem", perm: r }
       - { p: "/etc/ssl/private/{{ ansible_fqdn }}.key", perm: r }
       - { p: "/etc/ssl/private/dhparam4.pem", perm: r }
-    # openobserve key retrieval not working
-    otelcol_errors_validation: false
+    otelcol_auth_key: "{{ openobserve_root_user_email + ':' + openobserve_root_user_pass | ansible.builtin.b64encode }}"
   pre_tasks:
     - name: Ubuntu | Install python3
       ansible.builtin.raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
@@ -89,7 +88,6 @@
     - { role: juju4.otelcol,
         openobserve_server_ansible_host: localhost,
         otelcol_server_url: "https://localhost/api/default/",
-        otelcol_auth_key_retrieve: true
     }
   tasks:
     - name: Git clone python-openobserve
