@@ -231,3 +231,9 @@ jobs:
           [ -x /var/_openobserve/.cargo/bin/openobserve ] && sudo -u _openobserve /var/_openobserve/.cargo/bin/openobserve
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - otel-collector
+        run: |
+          set -x
+          sudo cat /etc/otel-config.yaml
+        if: ${{ always() }}
+        continue-on-error: true
