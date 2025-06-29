@@ -55,6 +55,8 @@
     repo: "{{ openobserve_restore_repo }}"
     dest: "{{ openobserve_restore_root }}"
     version: "{{ openobserve_restore_repo_version }}"
+  become: yes
+  become_user: "{{ openobserve_backup_config_user }}"
   when:
     - openobserve_restore_enable | bool
 
