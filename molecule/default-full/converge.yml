@@ -13,6 +13,11 @@
       - https://github.com/openobserve/dashboards/raw/refs/heads/main/OpenObserve/OpenObserve%20Infrastructure.dashboard.json
       - https://github.com/openobserve/dashboards/raw/refs/heads/main/Usage/Usage%20_%20Overall.dashboard.json
       - https://github.com/openobserve/dashboards/raw/refs/heads/main/Usage/Usage%20_%20Org.dashboard.json
+    ssl_dir: /etc/ssl/certs
+    site_server_name: "{{ ansible_fqdn }}"
+    openobserve_ca_bundle_filepath: "{{ hardenwebserver_ssl_cert | default(ssl_dir + '/' + site_server_name + '.crt') }}"
+    # mkcert san
+    alternate_dns: 'localhost 127.0.0.1 ::1'
     # https://openobserve.ai/docs/ingestion/logs/filebeat/
     filebeat_version: 8.x
     filebeat_output_elasticsearch_enabled: true
@@ -68,8 +73,8 @@
         (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
   roles:
     - geerlingguy.filebeat
-    - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
     - juju4.harden_nginx
+    - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
     - { role: juju4.otelcol,
         openobserve_server_ansible_host: localhost,
         otelcol_server_url: "https://localhost/api/default/",
