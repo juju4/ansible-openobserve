@@ -14,7 +14,7 @@
 
 - name: Download openobserve from openobserve.ai
   ansible.builtin.get_url:
-    src: "{{ openobserve_url }}"
+    url: "{{ openobserve_url }}"
     dest: "{{ install_archives }}/{{ openobserve_url | basename }}"
     mode: '0600'
     checksum: "{{ openobserve_hash | default(omit) }}"
