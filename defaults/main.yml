@@ -1,7 +1,11 @@
 ---
 
+openobserve_dl_github: false
 openobserve_repo: openobserve/openobserve
-openobserve_release: latest
+# openobserve_release: v0.15.0-rc3  # latest release on github
+openobserve_release: v0.15.0-rc5
+openobserve_url: "https://downloads.openobserve.ai/releases/openobserve/{{ openobserve_release }}/openobserve-{{ openobserve_release }}-linux-amd64.tar.gz"
+openobserve_hash: ''
 openobserve_force_update: false
 
 openobserve_user: _openobserve

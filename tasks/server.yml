@@ -10,6 +10,21 @@
     gh_json_query: "assets[?ends_with(browser_download_url, 'linux-amd64.tar.gz')].browser_download_url"
   when:
     - not openobserve_build_enable | bool
+    - openobserve_dl_github | bool
+
+- name: Download openobserve from openobserve.ai
+  ansible.builtin.get_url:
+    src: "{{ openobserve_url }}"
+    dest: "{{ install_archives }}/{{ openobserve_url | basename }}"
+    mode: '0600'
+    checksum: "{{ openobserve_hash | default(omit) }}"
+  environment:
+    http_proxy: "{{ proxy_url | default(omit) }}"
+  register: dl
+  until: dl is success
+  when:
+    - not openobserve_build_enable | bool
+    - not openobserve_dl_github | bool
 
 - name: Import openobserve tasks
   ansible.builtin.import_tasks: openobserve.yml
