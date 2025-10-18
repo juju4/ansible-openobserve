@@ -60,6 +60,7 @@
       - { p: "/etc/ssl/private/dhparam4.pem", perm: r }
     otelcol_auth_key: "{{ (openobserve_root_user_email + ':' + openobserve_root_user_pass) | ansible.builtin.b64encode }}"
     otelcol_debug_enable: true
+    otelcol_errors_validation2: false
   pre_tasks:
     - name: Ubuntu | Install python3
       ansible.builtin.raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
