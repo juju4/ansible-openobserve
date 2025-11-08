@@ -4,7 +4,7 @@
   ansible.builtin.import_tasks: github-repo-download.yml
   vars:
     gh_repo: "{{ openobserve_repo }}"
-    gh_release: "{{ openobserve_release }}"
+    gh_release: "{{ openobserve_github_version }}"
     # gh_json_query: "assets[*].browser_download_url"  # ok
     # gh_json_query: "assets[?ends_with(browser_download_url, 'linux-amd64.tar.gz')]"  # ok
     gh_json_query: "assets[?ends_with(browser_download_url, 'linux-amd64.tar.gz')].browser_download_url"
