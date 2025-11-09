@@ -200,6 +200,14 @@ jobs:
           sudo ls -la /var/_openobserve/build/src/proto
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - rust
+        run: |
+          set -x
+          rustup --version
+          rustc --version
+          cargo --version
+        if: ${{ always() }}
+        continue-on-error: true
       - name: After script - manual test run
         run: |
           set -x
