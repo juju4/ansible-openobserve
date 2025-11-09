@@ -205,7 +205,9 @@ jobs:
           set -x
           rustup --version
           rustc --version
+          which rustc
           cargo --version
+          which cargo
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - manual test run
