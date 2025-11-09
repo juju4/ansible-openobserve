@@ -19,7 +19,7 @@
   ansible.builtin.command: sh rustup.sh -y
   args:
     chdir: "{{ openobserve_home }}"
-    creates: "{{ openobserve_home }}/.cargo/env"
+    creates: "{{ openobserve_build_rust_creates }}"
   become: yes
   become_user: "{{ openobserve_user }}"
 
