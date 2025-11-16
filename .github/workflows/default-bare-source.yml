@@ -1,11 +1,15 @@
 ---
-name: default-bare-source
+name: default-bare-source-monthly
 
 on:
-  push:
-  pull_request:
-  schedule:
-    - cron: '0 1 * * 1'
+  workflow_dispatch:
+  schedule:  # run on the 11th of the month at 01:00 UTC
+    - cron: '0 1 11 * *'
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
 
 permissions: {}
 
@@ -35,11 +39,12 @@ jobs:
       ANSIBLE_SUITE: ${{ matrix.suite }}
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # tag=v5.0.0
         with:
           path: ${{ env.ANSIBLE_ROLE }}
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c  # tag=v6.0.0
         with:
           python-version: '3.x'
       - name: Install dependencies
@@ -208,6 +213,10 @@ jobs:
           which rustc
           cargo --version
           which cargo
+          ls -lA /var/_openobserve/ || true
+          ls -lA /var/_openobserve/.cargo || true
+          ls -lA /var/_openobserve/.cargo/bin || true
+          /var/_openobserve/.cargo/bin/cargo --version || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - manual test run
