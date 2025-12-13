@@ -145,8 +145,10 @@
     - false
 
 - name: Install openobserve
-  ansible.builtin.command:
-    cmd: "cargo install --path {{ openobserve_home }}/build"
+  ansible.builtin.shell:
+    cmd: |
+      . "$HOME/.cargo/env"
+      cargo install --path {{ openobserve_home }}/build
   args:
     chdir: "{{ openobserve_home }}/build"
     creates: "{{ openobserve_home }}/.cargo/bin/openobserve"
