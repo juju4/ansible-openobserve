@@ -24,6 +24,8 @@
     owner: "{{ openobserve_user }}"
     remote_src: true
     creates: "{% if not openobserve_force_update | bool %}{{ openobserve_rootdir }}/openobserve{% else %}{{ omit }}{% endif %}"
+  notify:
+    - Restart openobserve
   when:
     - not openobserve_build_enable | bool
 
