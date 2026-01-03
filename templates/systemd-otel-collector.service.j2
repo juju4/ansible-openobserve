@@ -18,8 +18,8 @@ PrivateTmp=true
 ProtectHome=yes
 ProtectSystem=yes
 # ProtectSystem=strict
-{% if (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 21) or
-      (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 11)
+{% if (ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']|int >= 21) or
+      (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version']|int >= 11)
 %}
 #  Error: failed to build pipelines: failed to create "memory_limiter" processor, in pipeline "logs": failed to get total memory, use fixed memory settings (limit_mib): open /proc/self/mountinfo: permission denied
 # ProtectProc=noaccess
@@ -37,9 +37,9 @@ UMask=077
 
 ProtectKernelTunables=true
 ProtectKernelModules=yes
-{% if (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 20) or
-      (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 11) or
-      (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 8 )
+{% if (ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']|int >= 20) or
+      (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version']|int >= 11) or
+      (ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version']|int > 8 )
 %}
 ProtectKernelLogs=yes
 ProtectHostname=yes
@@ -90,8 +90,8 @@ CapabilityBoundingSet=~CAP_FSETID CAP_SETFCAP
 CapabilityBoundingSet=~CAP_NET_RAW
 CapabilityBoundingSet=~CAP_IPC_LOCK
 
-{% if not (ansible_virtualization_type is defined and
-          ansible_virtualization_type == "docker"
+{% if not (ansible_facts['virtualization_type'] is defined and
+          ansible_facts['virtualization_type'] == "docker"
         )
 %}
 SystemCallFilter=@system-service

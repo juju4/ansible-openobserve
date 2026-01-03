@@ -3,34 +3,34 @@
 - name: Linux platform
   ansible.builtin.set_fact:
     openobserve_platform: linux
-  when: ansible_system == 'Linux'
+  when: ansible_facts['system'] == 'Linux'
 - name: Darwin platform
   ansible.builtin.set_fact:
     openobserve_platform: darwin
-  when: ansible_system == 'MacOS'
+  when: ansible_facts['system'] == 'MacOS'
 - name: X86_64 arch
   ansible.builtin.set_fact:
     openobserve_arch: amd64
-  when: ansible_architecture == 'x86_64'
+  when: ansible_facts['architecture'] == 'x86_64'
 - name: Aarch64 arch
   ansible.builtin.set_fact:
     openobserve_arch: arm64
-  when: ansible_architecture == 'aarch64'
+  when: ansible_facts['architecture'] == 'aarch64'
 - name: Debug
   ansible.builtin.debug:
     var: "{{ item }}"
   loop:
-    - ansible_system
-    - ansible_architecture
+    - ansible_facts['system']
+    - ansible_facts['architecture']
 
 - name: Set fact is_container
   ansible.builtin.set_fact:
     is_container: true
   when: >
-    (ansible_virtualization_type is defined and
-      (ansible_virtualization_type == "docker"
-       or ansible_virtualization_type == "containerd"
-       or ansible_virtualization_type == "container"
+    (ansible_facts['virtualization_type'] is defined and
+      (ansible_facts['virtualization_type'] == "docker"
+       or ansible_facts['virtualization_type'] == "containerd"
+       or ansible_facts['virtualization_type'] == "container"
       )
     )
 
@@ -41,7 +41,7 @@
   ansible.builtin.apt:
     update_cache: yes
     cache_valid_time: "3600"
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
   register: pkg_result
   until: pkg_result is success
 

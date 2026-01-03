@@ -76,8 +76,8 @@ CapabilityBoundingSet=~CAP_FSETID CAP_SETFCAP
 CapabilityBoundingSet=~CAP_NET_RAW
 CapabilityBoundingSet=~CAP_IPC_LOCK
 
-{% if not (ansible_virtualization_type is defined and
-          ansible_virtualization_type == "docker"
+{% if not (ansible_facts['virtualization_type'] is defined and
+          ansible_facts['virtualization_type'] == "docker"
         )
 %}
 SystemCallFilter=@system-service
