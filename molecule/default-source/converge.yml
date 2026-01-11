@@ -9,7 +9,6 @@
   remote_user: root
   vars:
     openobserve_build_enable: true
-    openobserve_build_rust_creates: "/notexistent"
   pre_tasks:
     - name: Ubuntu | Install python3
       ansible.builtin.raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
