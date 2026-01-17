@@ -10,7 +10,7 @@ on:
   merge_group:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 permissions: {}
@@ -48,6 +48,16 @@ jobs:
         uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548  # v6.1.0
         with:
           python-version: '3.13'
+      - name: Cache
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v5.0.1
+        with:
+          path: |
+            /var/cache/apt/archives
+            /var/lib/apt
+            /var/_install
+            /home/runner/.ansible
+            /home/runner/.cache/molecule
+          key: cache-ansible-${{ env.ANSIBLE_ROLE }}-${{ steps.get-date.outputs.date }}
       - name: Install dependencies
         run: |
           set -x
@@ -76,7 +86,7 @@ jobs:
           ansible-galaxy role list || true
           pwd
           env
-          find -ls
+          find . -ls
       - name: Galaxy dependencies
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-galaxy install --timeout 120 --verbose -r molecule/$ANSIBLE_SUITE/requirements.yml
