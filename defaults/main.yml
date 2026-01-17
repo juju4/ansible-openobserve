@@ -13,7 +13,7 @@ openobserve_user: _openobserve
 openobserve_home: /var/_openobserve
 openobserve_rootdir: /var/_openobserve/openobserve
 
-openobserve_web_url: "https://{{ ansible_fqdn }}"
+openobserve_web_url: "https://{{ ansible_facts['fqdn'] }}"
 # if using reverse-proxy with self-signed or internal CA (backup config)
 openobserve_ca_bundle_filepath:
 # Note: localhost and ::1 don't seem accepted
