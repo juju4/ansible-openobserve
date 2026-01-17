@@ -1,5 +1,4 @@
 ---
-
 - name: Converge
   hosts: all
   environment:
@@ -17,7 +16,7 @@
     site_server_name: "{{ ansible_fqdn }}"
     openobserve_ca_bundle_filepath: "{{ hardenwebserver_ssl_cert | default(ssl_dir + '/' + site_server_name + '.crt') }}"
     # mkcert san
-    alternate_dns: 'localhost 127.0.0.1 ::1'
+    alternate_dns: "localhost 127.0.0.1 ::1"
     openobserve_root_user_email: root@example.com
     openobserve_root_user_pass: root@example.com
     # https://openobserve.ai/docs/ingestion/logs/filebeat/
@@ -45,10 +44,10 @@
     # hardenwebserver_ssl_cert: "/etc/letsencrypt/live/{{ ansible_fqdn }}/fullchain.pem"
     # hardenwebserver_ssl_key: "/etc/letsencrypt/live/{{ ansible_fqdn }}/privkey.pem"
     hardenwebserver_systemd_dir_acl:
-      - { p: /etc/letsencrypt/archive, perm: rx, m: '0711' }
-      - { p: /etc/letsencrypt/live, perm: rx, m: '0711' }
-      - { p: "/etc/ssl/private", perm: rx, m: '0710' }
-      - { p: "/var/log/nginx", perm: rwx, m: '0755' }
+      - { p: /etc/letsencrypt/archive, perm: rx, m: "0711" }
+      - { p: /etc/letsencrypt/live, perm: rx, m: "0711" }
+      - { p: "/etc/ssl/private", perm: rx, m: "0710" }
+      - { p: "/var/log/nginx", perm: rwx, m: "0755" }
     hardenwebserver_systemd_files_acl:
       # - { p: "/etc/letsencrypt/live/{{ ansible_fqdn }}/privkey.pem", perm: r }
       - { p: "/etc/ssl/private/{{ ansible_fqdn }}.key", perm: r }
@@ -77,8 +76,5 @@
   roles:
     - geerlingguy.filebeat
     - juju4.harden_nginx
-    - { role: juju4.openobserve, openobserve_deploy_type: 'server' }
-    - { role: juju4.otelcol,
-        openobserve_server_ansible_host: localhost,
-        otelcol_server_url: "https://localhost/api/default/",
-    }
+    - { role: juju4.openobserve, openobserve_deploy_type: "server" }
+    - { role: juju4.otelcol, openobserve_server_ansible_host: localhost, otelcol_server_url: "https://localhost/api/default/" }

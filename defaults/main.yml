@@ -4,9 +4,9 @@ openobserve_dl_github: false
 openobserve_repo: openobserve/openobserve
 # openobserve_github_version: v0.15.0-rc3  # latest release with binaries on github
 # renovate: datasource=github-releases depName=openobserve/openobserve
-openobserve_github_version: 'v0.15.2'
+openobserve_github_version: "v0.15.2"
 openobserve_url: "https://downloads.openobserve.ai/releases/openobserve/{{ openobserve_github_version }}/openobserve-{{ openobserve_github_version }}-linux-amd64.tar.gz"
-openobserve_hash: ''
+openobserve_hash: ""
 openobserve_force_update: false
 
 openobserve_user: _openobserve
@@ -46,17 +46,17 @@ openobserve_cgroups_restriction_enable: true
 openobserve_webproxy_enable: false
 openobserve_webproxy_env_file: /etc/environment
 # currently not used as can't restrict incoming traffic
-openobserve_webproxy_ip: ''
+openobserve_webproxy_ip: ""
 # same but IP or hostname
-openobserve_webproxy_host: ''
-openobserve_webproxy_port: ''
+openobserve_webproxy_host: ""
+openobserve_webproxy_port: ""
 
-openobserve_logrotate_period: 'daily'
+openobserve_logrotate_period: "daily"
 openobserve_logrotate_rotate: 30
 openobserve_logrotate_compress: true
 openobserve_logrotate_delaycompress: true
 openobserve_logrotate_datext: true
-openobserve_logrotate_datformat: '-%Y%m%d'
+openobserve_logrotate_datformat: "-%Y%m%d"
 
 openobserve_backup_config_enable: false
 openobserve_backup_config_git_enable: false
@@ -94,16 +94,10 @@ openobserve_dashboards_url: []
 openobserve_dashboards_owner: "{{ openobserve_root_user_email }}"
 
 openobserve_build_gitconfig:
-  - { n: http.version,
-      v: HTTP/1.1
-  }
-  - { n: http.postBuffer,
-      v: 1048576000
-  }
+  - { false: http.version, v: HTTP/1.1 }
+  - { false: http.postBuffer, v: 1048576000 }
   # https://stackoverflow.com/questions/78966387/rust-tauri-build-error-failed-to-determine-package-fingerprint-for-build-scri
-  - { n: core.excludesFile,
-      v: /var/_openobserve/build/.gitignore
-  }
+  - { false: core.excludesFile, v: /var/_openobserve/build/.gitignore }
 openobserve_build_gh_url: https://github.com/cli/cli/releases/download/v2.64.0/gh_2.64.0_linux_amd64.deb
-openobserve_build_gh_hash: 'sha256:ef110bb82cdb9c2fab65ff12718f20e133cf7b3d9eac72280ea8de98ab1c464f'
+openobserve_build_gh_hash: "sha256:ef110bb82cdb9c2fab65ff12718f20e133cf7b3d9eac72280ea8de98ab1c464f"
 install_archives: /var/_install

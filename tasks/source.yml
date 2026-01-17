@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure build dependencies are present
   ansible.builtin.package:
     name: "{{ openobserve_build_pkgs }}"
@@ -12,7 +11,7 @@
   ansible.builtin.get_url:
     url: https://sh.rustup.rs
     dest: "{{ openobserve_home }}/rustup.sh"
-    mode: '0600'
+    mode: "0600"
     owner: "{{ openobserve_user }}"
 
 - name: Install rustup
@@ -20,14 +19,14 @@
   args:
     chdir: "{{ openobserve_home }}"
     creates: "{{ openobserve_build_rust_creates }}"
-  become: yes
+  become: true
   become_user: "{{ openobserve_user }}"
 
 - name: Ensure build directory exists
   ansible.builtin.file:
     path: "{{ openobserve_home }}/build"
     state: directory
-    mode: '0700'
+    mode: "0700"
     owner: "{{ openobserve_user }}"
 
 - name: Git
@@ -43,7 +42,7 @@
         value: "{{ item.v }}"
         scope: file
         file: "{{ openobserve_home }}/.gitconfig"
-      become: yes
+      become: true
       become_user: "{{ openobserve_user }}"
       loop: "{{ openobserve_build_gitconfig }}"
 
@@ -52,8 +51,8 @@
         repo: https://github.com/openobserve/openobserve.git
         dest: "{{ openobserve_home }}/build"
         version: "{{ openobserve_build_version }}"
-        update: no
-      become: yes
+        update: false
+      become: true
       become_user: "{{ openobserve_user }}"
   rescue:
     - name: Get Github CLI
@@ -61,7 +60,7 @@
         url: "{{ openobserve_build_gh_url }}"
         checksum: "{{ openobserve_build_gh_hash }}"
         dest: "{{ install_archives }}/{{ openobserve_build_gh_url | basename }}"
-        mode: '0644'
+        mode: "0644"
         owner: root
     - name: Install Github CLI
       ansible.builtin.apt:
@@ -77,7 +76,7 @@
         creates: "{{ openobserve_home }}/build/README.md"
       environment:
         GH_TOKEN: "{{ openobserve_build_gh_token }}"
-      become: yes
+      become: true
       become_user: "{{ openobserve_user }}"
 
 # error: Gxhash requires aes and sse2 intrinsics.
@@ -86,16 +85,10 @@
     path: "{{ item.p }}"
     regexp: "{{ item.re }}"
     replace: "{{ item.rep }}"
-    mode: '0600'
+    mode: "0600"
   loop:
-    - { p: "{{ openobserve_home }}/build/src/config/Cargo.toml",
-        re: "^default = \\[\"gxhash\"\\]",
-        rep: "default = []"
-    }
-    - { p: "{{ openobserve_home }}/build/.cargo/config.toml",
-        re: "\\+aes,",
-        rep: ""
-    }
+    - { p: "{{ openobserve_home }}/build/src/config/Cargo.toml", re: "^default = \\[\"gxhash\"\\]", rep: "default = []" }
+    - { p: "{{ openobserve_home }}/build/.cargo/config.toml", re: "\\+aes,", rep: "" }
   when:
     - "'+aes' not in cpuinfo.stdout"
 
@@ -103,14 +96,14 @@
 # "An I/O error happened. Please make sure you can access the file." [...]
 # "See https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-changed for more information."
 - name: Cargo clean
-  ansible.builtin.command:  # noqa no-changed-when
+  ansible.builtin.command: # noqa no-changed-when
     cmd: cargo clean
   args:
     chdir: "{{ openobserve_home }}/build"
   environment:
     PATH: "{{ openobserve_home }}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     RUSTFLAGS: "-C target-cpu=native"
-  become: yes
+  become: true
   become_user: "{{ openobserve_user }}"
   register: cargo_clean
   changed_when:
@@ -126,15 +119,15 @@
     PATH: "{{ openobserve_home }}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     RUSTFLAGS: "-C target-cpu=native"
     RUST_LOG: debug
-    RUST_BACKTRACE: '1'
-  become: yes
+    RUST_BACKTRACE: "1"
+  become: true
   become_user: "{{ openobserve_user }}"
   # async: "{{ openobserve_build_max | default(3600) }}"
   # poll: 0
   register: cargobuild
 
 - name: Check on async task for building
-  ansible.builtin.async_status:  # noqa no-handler
+  ansible.builtin.async_status: # noqa no-handler
     jid: "{{ cargobuild.ansible_job_id }}"
   register: job_result
   until: job_result.finished or cargobuild.finished
@@ -154,14 +147,14 @@
     creates: "{{ openobserve_home }}/.cargo/bin/openobserve"
   environment:
     PATH: "{{ openobserve_home }}/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-  become: yes
+  become: true
   become_user: "{{ openobserve_user }}"
   # async: "{{ openobserve_buildinstall_max | default(3600) }}"
   # poll: 0
   register: cargoinstall
 
 - name: Check on async task for cargo install
-  ansible.builtin.async_status:  # noqa no-handler
+  ansible.builtin.async_status: # noqa no-handler
     jid: "{{ cargoinstall.ansible_job_id }}"
   register: job_result2
   until: job_result2.finished or cargoinstall.finished

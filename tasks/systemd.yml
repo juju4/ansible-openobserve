@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure systemd is present
   ansible.builtin.package:
     name: systemd
@@ -9,7 +8,7 @@
   ansible.builtin.template:
     src: "{{ openobserve_env_variables_template }}"
     dest: "/etc/default/openobserve"
-    mode: '0640'
+    mode: "0640"
     owner: root
     group: "{{ openobserve_user }}"
   notify:
@@ -19,7 +18,7 @@
   ansible.builtin.template:
     src: "systemd-openobserve.service.j2"
     dest: "/etc/systemd/system/openobserve.service"
-    mode: '0644'
+    mode: "0644"
   notify:
     - Reload systemd
     - Restart openobserve
@@ -28,7 +27,7 @@
   ansible.builtin.service:
     name: "openobserve.service"
     state: started
-    enabled: yes
+    enabled: true
   no_log: "{{ openobserve_no_log | default(true) }}"
   when: not is_container | bool
 

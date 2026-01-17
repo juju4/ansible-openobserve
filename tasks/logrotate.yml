@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure logrotate package is present
   ansible.builtin.package:
     name: logrotate
@@ -11,6 +10,6 @@
   ansible.builtin.template:
     src: logrotate-openobserve.j2
     dest: /etc/logrotate.d/openobserve
-    mode: '0644'
-    validate: 'logrotate -dv %s'
-    backup: yes
+    mode: "0644"
+    validate: "logrotate -dv %s"
+    backup: true

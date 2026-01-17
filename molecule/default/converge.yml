@@ -1,5 +1,4 @@
 ---
-
 - name: Converge
   hosts: all
   environment:
@@ -22,8 +21,7 @@
       ansible.builtin.setup:
       when: (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] | int >= 16)
     - name: Ubuntu Bionic+, Redhat 8+ | Enforce python3 for ansible
-      ansible.builtin.set_fact:
-        ansible_facts['python_interpreter:'] /usr/bin/python3
+      ansible.builtin.set_fact: ansible_facts['python_interpreter:'] /usr/bin/python3
       when: >
         (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] | int >= 16) or
         (ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] | int >= 8)

@@ -1,9 +1,8 @@
 ---
-
 - name: Reload systemd
   ansible.builtin.systemd:
-    daemon_reload: yes
-  become: yes
+    daemon_reload: true
+  become: true
   become_user: root
   when: not is_container | bool
 
@@ -11,7 +10,7 @@
   ansible.builtin.service:
     name: openobserve
     state: restarted
-  become: yes
+  become: true
   become_user: root
   when: not is_container | bool
 
@@ -19,7 +18,7 @@
   ansible.builtin.service:
     name: otel-collector
     state: restarted
-  become: yes
+  become: true
   become_user: root
   when: not is_container | bool
 
@@ -27,10 +26,10 @@
   ansible.builtin.lineinfile:
     path: /etc/ca-certificates.conf
     line: "{{ openobserve_server_crt_filepath | basename | regex_replace('.crt', '-openobserve.crt') }}"
-    mode: '0644'
+    mode: "0644"
     owner: root
 
 - name: Update-ca-certificates
-  ansible.builtin.command:  # noqa no-changed-when
+  ansible.builtin.command: # noqa no-changed-when
     cmd: update-ca-certificates
-  become: yes
+  become: true

@@ -1,9 +1,8 @@
 ---
-
 - name: Download dashboards
   ansible.builtin.get_url:
     url: "{{ item }}"
-    mode: '0400'
+    mode: "0400"
     dest: "{{ install_archives }}/{{ item | basename }}"
     owner: "{{ openobserve_user }}"
   loop: "{{ openobserve_dashboards_url }}"
@@ -14,7 +13,7 @@
     path: "{{ install_archives }}/{{ item | basename }}"
     regexp: '"owner": ".*",'
     replace: '"owner": "{{ openobserve_dashboards_owner }}",'
-    mode: '0400'
+    mode: "0400"
     owner: "{{ openobserve_user }}"
   loop: "{{ openobserve_dashboards_url }}"
   when:
@@ -32,7 +31,7 @@
     remote_src: true
     url_username: "{{ openobserve_root_user_email }}"
     url_password: "{{ openobserve_root_user_pass }}"
-    return_content: yes
+    return_content: true
   register: _result
   until: _result.status == 200
   loop: "{{ openobserve_dashboards_url }}"
@@ -45,7 +44,7 @@
 
 # Give all dashboard and json content
 - name: List dashboards (curl)
-  ansible.builtin.command:  # noqa command-instead-of-module no-changed-when
+  ansible.builtin.command: # noqa command-instead-of-module no-changed-when
     cmd: curl http://localhost:5080/api/default/dashboards -u "{{ openobserve_root_user_email }}:{{ openobserve_root_user_pass }}"
   register: dashboards_list
   changed_when: false
@@ -54,7 +53,7 @@
 # * idempotence? no and creates duplicate...
 # * org_id/k8s_namespace_name/namespace = No Data Found
 - name: Import dashboards (curl)
-  ansible.builtin.command:  # noqa command-instead-of-module no-changed-when
+  ansible.builtin.command: # noqa command-instead-of-module no-changed-when
     cmd: >-
       curl http://localhost:5080/api/default/dashboards
         -u "{{ openobserve_root_user_email }}:{{ openobserve_root_user_pass }}"

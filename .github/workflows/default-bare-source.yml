@@ -3,16 +3,14 @@ name: default-bare-source-monthly
 
 on:
   workflow_dispatch:
-  schedule:  # run on the 11th of the month at 01:00 UTC
-    - cron: '0 1 11 * *'
+  schedule: # run on the 11th of the month at 01:00 UTC
+    - cron: "0 1 11 * *"
   merge_group:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
 permissions: {}
-
 jobs:
   build:
     permissions:
@@ -25,11 +23,11 @@ jobs:
       matrix:
         include:
           - distribution: ubuntu
-            version: '24.04'
+            version: "24.04"
             suite: default-source
             experimental: false
           - distribution: ubuntu
-            version: '24.04'
+            version: "24.04"
             suite: default-source-HEAD
             experimental: true
     env:
@@ -40,13 +38,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           path: ${{ env.ANSIBLE_ROLE }}
       - name: Set up Python
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548  # v6.1.0
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
-          python-version: '3.x'
+          python-version: "3.x"
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
@@ -69,8 +67,8 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}
         env:
-          PY_COLORS: '1'
-          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
       - name: idempotency run
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS} | tee /tmp/idempotency.log | grep -q 'changed=0.*failed=0'  && (echo 'Idempotence test: pass' && exit 0)  || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit 0)
@@ -78,8 +76,8 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/verify.yml ${ANSIBLE_EXTRA_VARS}
         env:
-          PY_COLORS: '1'
-          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
       - name: On failure
         run: |
           systemctl -l --no-pager status

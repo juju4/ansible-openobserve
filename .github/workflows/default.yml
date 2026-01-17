@@ -5,16 +5,14 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-  schedule:  # run weekly, every monday 01:00
-    - cron: '0 1 * * 1'
+  schedule: # run weekly, every monday 01:00
+    - cron: "0 1 * * 1"
   merge_group:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 permissions: {}
-
 jobs:
   build:
 
@@ -27,10 +25,10 @@ jobs:
       max-parallel: 4
       matrix:
         include:
-          - molecule_distro: 'almalinux:10-kitten'
+          - molecule_distro: "almalinux:10-kitten"
             experimental: false
             suite: default
-          - molecule_distro: 'ubuntu:24.04'
+          - molecule_distro: "ubuntu:24.04"
             experimental: false
             suite: default
     env:
@@ -41,15 +39,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8  # v6.0.1
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           path: ${{ env.ANSIBLE_ROLE }}
       - name: Set up Python
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548  # v6.1.0
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
-          python-version: '3.13'
+          python-version: "3.13"
       - name: Cache
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb  # v5.0.1
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           path: |
             /var/cache/apt/archives
@@ -95,8 +93,8 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && molecule test --scenario-name ${ANSIBLE_SUITE}
         env:
-          PY_COLORS: '1'
-          ANSIBLE_FORCE_COLOR: '1'
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
           MOLECULE_DISTRO: ${{ matrix.molecule_distro }}
       - name: After script | Environment
         run: |

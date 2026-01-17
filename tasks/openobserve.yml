@@ -1,26 +1,25 @@
 ---
-
 - name: Ensure openobserve user exists
   ansible.builtin.user:
     name: "{{ openobserve_user }}"
     home: "{{ openobserve_home }}"
     system: true
-    create_home: yes
-  become: yes
+    create_home: true
+  become: true
   become_user: root
 
 - name: Ensure root dir exists
   ansible.builtin.file:
     dest: "{{ openobserve_rootdir }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
     owner: "{{ openobserve_user }}"
 
 - name: Unarchive
   ansible.builtin.unarchive:
     src: "{{ install_archives }}/{{ gh_dl_url | default(openobserve_url) | basename }}"
     dest: "{{ openobserve_rootdir }}"
-    mode: '0755'
+    mode: "0755"
     owner: "{{ openobserve_user }}"
     remote_src: true
     creates: "{% if not openobserve_force_update | bool %}{{ openobserve_rootdir }}/openobserve{% else %}{{ omit }}{% endif %}"
@@ -33,5 +32,5 @@
   ansible.builtin.file:
     dest: /var/log/openobserve
     state: directory
-    mode: '0775'
+    mode: "0775"
     owner: "{{ openobserve_user }}"

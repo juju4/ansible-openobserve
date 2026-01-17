@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure python dependencies are present
   ansible.builtin.package:
     name:
@@ -14,15 +13,15 @@
     name: "{{ openobserve_backup_config_user }}"
     home: "{{ openobserve_backup_config_home }}"
     system: true
-    create_home: yes
-  become: yes
+    create_home: true
+  become: true
   become_user: root
 
 - name: Ensure .ssh dir exists
   ansible.builtin.file:
     dest: "{{ openobserve_backup_config_home }}/.ssh"
     state: directory
-    mode: '0700'
+    mode: "0700"
     owner: "{{ openobserve_backup_config_user }}"
 
 - name: Generate an OpenSSH keypair for backup user
@@ -30,7 +29,7 @@
     path: "{{ openobserve_backup_config_home }}/.ssh/id_ed25519"
     type: ed25519
     comment: "o2-backup@{{ ansible_facts['fqdn'] }}-{{ ansible_date_time.date }}"
-    mode: '0600'
+    mode: "0600"
     owner: "{{ openobserve_backup_config_user }}"
 
 # To version config, should add public ssh key to server and put repo here
@@ -38,7 +37,7 @@
   ansible.builtin.file:
     dest: "{{ openobserve_backup_config_root }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
     owner: "{{ openobserve_backup_config_user }}"
   when:
     - not openobserve_restore_enable | bool
@@ -47,7 +46,7 @@
   ansible.builtin.pip:
     name: "{{ openobserve_pip_pkgs }}"
     virtualenv: "{{ openobserve_backup_config_venv }}"
-  become: yes
+  become: true
   become_user: "{{ openobserve_backup_config_user }}"
 
 - name: Restore | Get settings repository
@@ -55,7 +54,7 @@
     repo: "{{ openobserve_restore_repo }}"
     dest: "{{ openobserve_restore_root }}"
     version: "{{ openobserve_restore_repo_version }}"
-  become: yes
+  become: true
   become_user: "{{ openobserve_backup_config_user }}"
   when:
     - openobserve_restore_enable | bool
@@ -70,7 +69,7 @@
       REQUESTS_CA_BUNDLE={{ openobserve_ca_bundle_filepath }}
       {% endif %}
     dest: "{{ openobserve_backup_config_root }}/.env"
-    mode: '0600'
+    mode: "0600"
     owner: "{{ openobserve_backup_config_user }}"
 
 - name: Import restore

@@ -1,5 +1,4 @@
 ---
-
 - name: Linux platform
   ansible.builtin.set_fact:
     openobserve_platform: linux
@@ -39,7 +38,7 @@
 
 - name: Debian | Update apt cache
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
     cache_valid_time: "3600"
   when: ansible_facts['os_family'] == 'Debian'
   register: pkg_result
@@ -49,8 +48,8 @@
   ansible.builtin.file:
     dest: "{{ install_archives }}"
     state: directory
-    mode: '0775'
-  become: yes
+    mode: "0775"
+  become: true
   become_user: root
   when:
     - install_archives != '/tmp'

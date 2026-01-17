@@ -1,5 +1,4 @@
 ---
-
 - name: Import Github repo release download
   ansible.builtin.import_tasks: github-repo-download.yml
   vars:
@@ -16,7 +15,7 @@
   ansible.builtin.get_url:
     url: "{{ openobserve_url }}"
     dest: "{{ install_archives }}/{{ openobserve_url | basename }}"
-    mode: '0600'
+    mode: "0600"
     checksum: "{{ openobserve_hash | default(omit) }}"
   environment:
     http_proxy: "{{ proxy_url | default(omit) }}"

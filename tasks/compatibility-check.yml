@@ -1,5 +1,4 @@
 ---
-
 - name: Get cpuinfo
   ansible.builtin.command:
     cmd: cat /proc/cpuinfo

@@ -1,5 +1,4 @@
 ---
-
 - name: Verify
   hosts: all
   vars:
@@ -79,7 +78,7 @@
       ansible.builtin.assert:
         that:
           - "'ERROR' in errors.stdout"
-      ignore_errors: true  # noqa ignore-errors
+      ignore_errors: true # noqa ignore-errors
       when:
         - not is_container|bool
 
@@ -88,9 +87,9 @@
         url: "http://localhost:5080{{ item }}"
         url_username: "{{ openobserve_root_user_user }}"
         url_password: "{{ openobserve_root_user_pass }}"
-        return_content: yes
+        return_content: true
       changed_when: false
-      ignore_errors: true  # noqa ignore-errors
+      ignore_errors: true # noqa ignore-errors
       loop:
         - "/web/"
         - "/api/{{ org_id }}/dashboards"
@@ -118,6 +117,6 @@
             "timeout": 0
           }
       changed_when: false
-      ignore_errors: true  # noqa ignore-errors
+      ignore_errors: true # noqa ignore-errors
       when:
         - not is_container|bool
