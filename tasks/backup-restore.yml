@@ -28,7 +28,7 @@
   community.crypto.openssh_keypair:
     path: "{{ openobserve_backup_config_home }}/.ssh/id_ed25519"
     type: ed25519
-    comment: "o2-backup@{{ ansible_facts['fqdn'] }}-{{ ansible_date_time.date }}"
+    comment: "o2-backup@{{ ansible_facts['fqdn'] }}-{{ ansible_facts.date_time.date }}"
     mode: "0600"
     owner: "{{ openobserve_backup_config_user }}"
 
