@@ -66,11 +66,7 @@ openobserve_backup_config_root: /var/_openobserve_backup/o2
 openobserve_backup_user_email: root@example.com
 openobserve_backup_user_pass: root@example.com
 openobserve_backup_config_venv: /var/_openobserve_backup/venv
-openobserve_pip_pkgs:
-  - git+https://github.com/juju4/python-openobserve@181ef789ca248f2274cd89e44e6a3b12624f8955
-  - pandas
-  - python-dotenv
-  - Gitpython
+openobserve_pip_pkgs_requirements: requirements.txt
 
 openobserve_restore_enable: false
 openobserve_restore_root: /var/_openobserve_backup/o2
