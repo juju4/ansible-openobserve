@@ -113,7 +113,7 @@
           OO_USER={{ openobserve_root_user_email }}
           OO_PASS={{ openobserve_root_user_pass }}
           {% if openobserve_ca_bundle_filepath != None and openobserve_ca_bundle_filepath | length > 0 %}
-          REQUESTS_CA_BUNDLE={{ openobserve_ca_bundle_filepath }}
+          SSL_CERT_FILE={{ openobserve_ca_bundle_filepath }}
           {% endif %}
         dest: /root/.env
         mode: "0600"
