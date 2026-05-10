@@ -45,13 +45,13 @@
 - name: Copy requirements.txt
   ansible.builtin.copy:
     src: "{{ openobserve_pip_pkgs_requirements }}"
-    dest: "{{ openobserve_backup_config_root }}/{{ openobserve_pip_pkgs_requirements | basename }}"
+    dest: "{{ openobserve_backup_config_home }}/{{ openobserve_pip_pkgs_requirements | basename }}"
     mode: "0600"
     owner: "{{ openobserve_backup_config_user }}"
 
 - name: Install python-openobserve venv
   ansible.builtin.pip:
-    requirements: "{{ openobserve_backup_config_root }}/{{ openobserve_pip_pkgs_requirements | basename }}"
+    requirements: "{{ openobserve_backup_config_home }}/{{ openobserve_pip_pkgs_requirements | basename }}"
     virtualenv: "{{ openobserve_backup_config_venv }}"
   become: true
   become_user: "{{ openobserve_backup_config_user }}"
