@@ -1,4 +1,4 @@
 python-openobserve==0.5.0
 pandas==2.2.3
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 Gitpython==3.1.50
