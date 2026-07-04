@@ -58,5 +58,9 @@ server {
         proxy_buffer_size 32k;
         # "large_client_header_buffers" directive is not allowed here
         # large_client_header_buffers 4 32k;
+        # if getting blank page because issue loading some javascript files
+        # or "(failed) net::ERR_HTTP2_PROTOCOL_ERROR"
+        # default 1024m, nok 2048m to 64000m
+        proxy_max_temp_file_size 0;
     }
 }
