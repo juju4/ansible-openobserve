@@ -53,6 +53,8 @@
       # - { p: "/etc/letsencrypt/live/{{ ansible_fqdn }}/privkey.pem", perm: r }
       - { p: "/etc/ssl/private/{{ ansible_fqdn }}.key", perm: r }
       - { p: "/etc/ssl/private/dhparam4.pem", perm: r }
+      - { p: "/var/log/nginx/openobserve.access.log", perm: rw }
+      - { p: "/var/log/nginx/openobserve.error.log", perm: rw }
     otelcol_auth_key: "{{ (openobserve_root_user_email + ':' + openobserve_root_user_pass) | ansible.builtin.b64encode }}"
     otelcol_errors_validation2: false
   pre_tasks:
