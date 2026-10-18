@@ -21,6 +21,7 @@
   loop:
     - ansible_facts['system']
     - ansible_facts['architecture']
+    - openobserve_github_version
 
 - name: Set fact is_container
   ansible.builtin.set_fact:

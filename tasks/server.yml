@@ -39,6 +39,17 @@
 - name: Import systemd tasks
   ansible.builtin.import_tasks: systemd.yml
 
+- name: Get openobserve installed version
+  ansible.builtin.command:
+    cmd: "{{ openobserve_rootdir }}/openobserve --version"
+  become: true
+  become_user: "{{ openobserve_user }}"
+  register: o2_version
+  changed_when: false
+- name: Currently installed version
+  ansible.builtin.debug:
+    var: o2_version
+
 - name: Check if openobserve port is listening
   ansible.builtin.wait_for:
     port: "{{ openobserve_listen_port }}"
