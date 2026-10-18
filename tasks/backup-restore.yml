@@ -24,6 +24,10 @@
     mode: "0700"
     owner: "{{ openobserve_backup_config_user }}"
 
+- name: Check if existing keypair for backup user
+  ansible.builtin.stat:
+    path: "{{ openobserve_backup_config_home }}/.ssh/id_ed25519"
+  register: backupkey
 - name: Generate an OpenSSH keypair for backup user
   community.crypto.openssh_keypair:
     path: "{{ openobserve_backup_config_home }}/.ssh/id_ed25519"
@@ -31,6 +35,8 @@
     comment: "o2-backup@{{ ansible_facts['fqdn'] }}-{{ ansible_facts.date_time.date }}"
     mode: "0600"
     owner: "{{ openobserve_backup_config_user }}"
+  when:
+    - not backupkey.stat.exists
 
 # To version config, should add public ssh key to server and put repo here
 - name: Ensure root dir exists
