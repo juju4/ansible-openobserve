@@ -11,5 +11,9 @@
     src: logrotate-openobserve.j2
     dest: /etc/logrotate.d/openobserve
     mode: "0644"
-    validate: "logrotate -dv %s"
     backup: true
+
+- name: Global logrotate configuration validation
+  ansible.builtin.command:
+    cmd: logrotate -dv /etc/logrotate.conf
+  changed_when: false
