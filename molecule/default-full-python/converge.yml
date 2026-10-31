@@ -15,7 +15,7 @@
     openobserve_restore_enable: true
     openobserve_backup_config_enable: true
     ssl_dir: /etc/ssl/certs
-    site_server_name: "{{ ansible_fqdn }}"
+    site_server_name: "{{ ansible_facts.fqdn }}"
     openobserve_ca_bundle_filepath: "{{ hardenwebserver_ssl_cert | default(ssl_dir + '/' + site_server_name + '.crt') }}"
     # mkcert san
     alternate_dns: "localhost 127.0.0.1 ::1"
@@ -46,16 +46,16 @@
     hardenwebserver_https_template: ../../templates/nginx.conf.j2
     # hardenwebserver_header_csp: "default-src 'self'; script-src 'self' 'unsafe-inline' 'report-sample'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline' 'unsafe-eval'; font-src 'self' data:;base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests; report-uri /csp/report.php;"
     hardenwebserver_header_csp: "upgrade-insecure-requests; report-uri /csp/report.php;"
-    # hardenwebserver_ssl_cert: "/etc/letsencrypt/live/{{ ansible_fqdn }}/fullchain.pem"
-    # hardenwebserver_ssl_key: "/etc/letsencrypt/live/{{ ansible_fqdn }}/privkey.pem"
+    # hardenwebserver_ssl_cert: "/etc/letsencrypt/live/{{ ansible_facts.fqdn }}/fullchain.pem"
+    # hardenwebserver_ssl_key: "/etc/letsencrypt/live/{{ ansible_facts.fqdn }}/privkey.pem"
     hardenwebserver_systemd_dir_acl:
       - { p: /etc/letsencrypt/archive, perm: rx, m: "0711" }
       - { p: /etc/letsencrypt/live, perm: rx, m: "0711" }
       - { p: "/etc/ssl/private", perm: rx, m: "0710" }
       - { p: "/var/log/nginx", perm: rwx, m: "0755" }
     hardenwebserver_systemd_files_acl:
-      # - { p: "/etc/letsencrypt/live/{{ ansible_fqdn }}/privkey.pem", perm: r }
-      - { p: "/etc/ssl/private/{{ ansible_fqdn }}.key", perm: r }
+      # - { p: "/etc/letsencrypt/live/{{ ansible_facts.fqdn }}/privkey.pem", perm: r }
+      - { p: "/etc/ssl/private/{{ ansible_facts.fqdn }}.key", perm: r }
       - { p: "/etc/ssl/private/dhparam4.pem", perm: r }
     otelcol_auth_key: "{{ (openobserve_root_user_email + ':' + openobserve_root_user_pass) | ansible.builtin.b64encode }}"
     otelcol_debug_enable: true
@@ -65,21 +65,21 @@
       ansible.builtin.raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
       register: python3
       changed_when: "'installed' in python3.stdout"
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 16)
+      when: (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 16)
     - name: RedHat | Install python3
       ansible.builtin.raw: test -e /usr/bin/python3 || (yum install -y python3)
       register: python3
       changed_when: "'installed' in python3.stdout"
-      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
+      when: (ansible_facts.os_family == "RedHat" and ansible_facts.distribution_major_version | int >= 8)
     - name: Gather Facts
       ansible.builtin.setup:
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 16)
+      when: (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 16)
     - name: Ubuntu Bionic+, Redhat 8+ | Enforce python3 for ansible
       ansible.builtin.set_fact:
         ansible_python_interpreter: /usr/bin/python3
       when: >
-        (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 16) or
-        (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
+        (ansible_facts.distribution == "Ubuntu" and ansible_facts.distribution_major_version | int >= 16) or
+        (ansible_facts.os_family == "RedHat" and ansible_facts.distribution_major_version | int >= 8)
   roles:
     - geerlingguy.filebeat
     # need certificate to exist before creating openobserve-backup.service
