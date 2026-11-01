@@ -18,8 +18,6 @@
     openobserve_ca_bundle_filepath: "{{ hardenwebserver_ssl_cert | default(ssl_dir + '/' + site_server_name + '.crt') }}"
     # mkcert san
     alternate_dns: "localhost 127.0.0.1 ::1"
-    openobserve_root_user_email: root@example.com
-    openobserve_root_user_pass: root@example.com
     # https://openobserve.ai/docs/ingestion/logs/filebeat/
     filebeat_version: 8.x
     filebeat_output_elasticsearch_enabled: true
